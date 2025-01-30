@@ -17,6 +17,14 @@ export class SigninComponent {
 
   constructor (private http: HttpClient){}
 
+  ngOnInit(){
+    if (typeof window !== 'undefined') {
+      this.token = localStorage.getItem('angular_token')!
+      
+    }
+   
+  }
+
   signIn(){
   /*   console.log('sdfsdf')
     return */
@@ -36,7 +44,7 @@ export class SigninComponent {
         this.http.post('http://localhost:3000/api/user/signin',payload).subscribe((res:any)=>{
           this.token = res.token;
           localStorage.setItem('angular_token',this.token)
-          localStorage.setItem('angular_username',this.username)
+          localStorage.setItem('angular_username',res.username)
      
 
           location.reload()

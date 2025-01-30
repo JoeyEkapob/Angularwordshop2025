@@ -13,4 +13,11 @@ import { SigninComponent } from './signin/signin.component';
 })
 export class AppComponent {
  token: string | undefined = '';
+
+ ngOnInit(){
+  if (typeof window !== 'undefined') {
+    this.token = localStorage.getItem('angular_token') ?? undefined;
+  }
+
+ }
 }
