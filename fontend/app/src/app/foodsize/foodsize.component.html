@@ -1,14 +1,64 @@
 <div class="mt-3 card">
     <div class="card-header">ขนาด</div>
     <div class="card-body">
-        <button class="btn btn-primary" data-bs-target="#modalFoodSize" data-bs-toggle="modal"> <i
-                class="fa fa-plus me-2">เพิ่มรายการ</i></button>
 
-        <table class="table">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFoodSize"><i
+                class="fa fa-plus "></i></button>
 
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ประเภทอาหาร</th>
+                    <th>ชื่อ</th>
+                    <th class="text-end">จ่ายเพิ่ม (บาท)</th>
+                    <th>หมายเหตุ</th>
+                    <th width="110px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(item of foodsize; track item){
+                    <tr>
+                        <td>{{item.food_type_name}}</td>
+                        <td>{{item.name}}</td>
+                        <td class="text-end">{{item.moneyadded}}</td>
+                        <td>{{item.remark}}</td>
+                        <td class="text-center">
+                            <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalFoodSize" (click)="edit(item)"> <i class="fa fa-pencil"></i></button>
+                            <button class="btn btn-danger me-2" (click)="remove(item)"> <i class="fa fa-times"></i></button>
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
         </table>
     </div>
 </div>
-<app-mymodal id="modalFoodSize" title="ขนาด">
-    
+<app-mymodal modalId="modalFoodSize" title="ประเภทอาหาร">
+    <div>
+        <div>ประเภทอาหาร</div>
+        <select class="form-control" [(ngModel)]="foodtypeid">
+            @for (item of foodType; track item) {
+            <option [value]="item.id">
+                {{item.name}}
+            </option>
+            }
+
+
+        </select>
+    </div>
+    <div class="mt-3">
+        <div>ชื่อ</div>
+        <input class="form-control" [(ngModel)]="name">
+    </div>
+    <div class="mt-3">
+        <div>คิดเงินเพิ่ม (บาท)</div>
+        <input type="number" class="form-control" [(ngModel)]="price">
+    </div>
+    <div class="mt-3">
+        <div>หมายเหตุ</div>
+        <input class="form-control" [(ngModel)]="remark">
+    </div>
+    <button class="mt-3 btn btn-primary" (click)="save()">
+        <i class="fa fa-check me-2"></i>บันทึก
+    </button>
 </app-mymodal>

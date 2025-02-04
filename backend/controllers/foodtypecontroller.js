@@ -12,7 +12,7 @@ module.exports = {
 
             return res.send({ message: "success" })
         } catch (e) {
-            return res.send(500).send({ error: e.message })
+            return res.status(500).send({ error: e.message })
 
         }
     },

@@ -8,6 +8,7 @@ const cors = require("cors")
 const userController = require('./controllers/usercontroller')
 const FoodTypecontroller = require('./controllers/foodtypecontroller')
 const foodtypecontroller = require('./controllers/foodtypecontroller')
+const foodsizecontroller = require('./controllers/foodsizecontroller')
 
 app.use(cors())
 
@@ -19,6 +20,14 @@ app.post("/api/foodtype/create",(req,res)=> foodtypecontroller.create(req,res))
 app.post("/api/foodtype/list",(req,res)=> foodtypecontroller.list(req,res))
 app.delete("/api/foodtype/remove/:id",(req,res)=> foodtypecontroller.remove(req,res))
 app.put('/api/foodtype/update',(req,res)=>foodtypecontroller.update(req,res))
+
+
+app.post('/api/foodsize/create',(req,res)=>{
+    foodsizecontroller.create(req,res)
+})
+app.post('/api/foodsize/list',(req,res)=> foodsizecontroller.list(req,res))
+app.delete('/api/foodsize/remove/:id',(req,res)=>foodsizecontroller.remove(req,res))
+app.put('/api/foodsize/update',(req,res)=> foodsizecontroller.update(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')
