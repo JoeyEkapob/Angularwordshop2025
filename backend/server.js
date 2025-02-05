@@ -9,6 +9,7 @@ const userController = require('./controllers/usercontroller')
 const FoodTypecontroller = require('./controllers/foodtypecontroller')
 const foodtypecontroller = require('./controllers/foodtypecontroller')
 const foodsizecontroller = require('./controllers/foodsizecontroller')
+const tastecontroller = require('./controllers/tastecontroller')
 
 app.use(cors())
 
@@ -22,12 +23,16 @@ app.delete("/api/foodtype/remove/:id",(req,res)=> foodtypecontroller.remove(req,
 app.put('/api/foodtype/update',(req,res)=>foodtypecontroller.update(req,res))
 
 
-app.post('/api/foodsize/create',(req,res)=>{
-    foodsizecontroller.create(req,res)
-})
+app.post('/api/foodsize/create',(req,res)=>foodsizecontroller.create(req,res))
 app.post('/api/foodsize/list',(req,res)=> foodsizecontroller.list(req,res))
 app.delete('/api/foodsize/remove/:id',(req,res)=>foodsizecontroller.remove(req,res))
 app.put('/api/foodsize/update',(req,res)=> foodsizecontroller.update(req,res))
+
+
+app.post('/api/taste/create',(req,res)=>tastecontroller.create(req,res))
+app.post('/api/taste/list',(req,res)=> tastecontroller.list(req,res))
+app.delete('/api/taste/remove/:id',(req,res)=>tastecontroller.remove(req,res))
+app.put('/api/taste/update',(req,res)=>tastecontroller.update(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')

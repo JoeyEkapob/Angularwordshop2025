@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { SigninComponent } from './signin/signin.component';
 import { FoodtypeComponent } from './foodtype/foodtype.component';
 import { FoodsizeComponent } from './foodsize/foodsize.component';
+import { TasteComponent } from './taste/taste.component';
+import { FoodComponent } from './food/food.component';
 
 
 
@@ -16,5 +18,14 @@ export const routes: Routes = [{
 {
     path:'foodsize',
     component:FoodsizeComponent
+},
+{
+    path: 'taste',
+    component:TasteComponent
+},{
+    path:'food',
+    component:FoodComponent
+
 }
+  
 ];

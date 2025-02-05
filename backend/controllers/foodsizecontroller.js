@@ -1,6 +1,4 @@
-const { error } = require('console');
 const pool = require('./config/db');
-const { remove, update } = require('./foodtypecontroller');
 
 module.exports = {
     create: async (req, res) => {
@@ -48,7 +46,7 @@ module.exports = {
     },
     update : async (req,res)=>{
         try{
-            const sql = `UPDATE Foodsize SET name = ? , remark = ? , foodtypeid = ? , moneyadded = ? WHERE id = ?`;
+            const sql = `UPDATE FoodSize SET name = ? , remark = ? , foodtypeid = ? , moneyadded = ? WHERE id = ?`;
             const values = [req.body.name, req.body.remark, req.body.foodtypeid,req.body.price,req.body.id]
             const [rows] = await pool.query(sql, values)
 

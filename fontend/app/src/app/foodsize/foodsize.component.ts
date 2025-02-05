@@ -44,8 +44,9 @@ export class FoodsizeComponent {
       price: this.price,
       remark : this.remark,
       id: this.id,
-      foodtypeid: this.foodtypeid
+      foodtypeid: parseInt(this.foodtypeid.toString()),
     }
+
 
     if(this.id > 0){
       this.http.put(config.apiServer + '/api/foodsize/update',payload).subscribe((res:any)=>{
