@@ -1,1 +1,37 @@
-<p>food works!</p>
+<div class="card mt-3">
+    <div class="card-header">อาหาร / เครื่องดื่ม</div>
+    <div class="card-body">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFood" (click)="clearForm()"><i class="fa fa-plus m"></i></button>
+    </div>
+</div>
+
+<app-mymodal modalId="modalFood" title="อาหาร/เครื่องดื่ม">
+    <div>
+        <div>ประเภทอาหาร</div>
+        <select name="" id="" class="form-control"></select>
+    </div>
+    <div class="mt-3">
+        <div>ชื่ออาหาร</div>
+        <input type="text" class="form-control">
+    </div>
+    <div class="mt-3">
+        <div>Flie ภาพ</div>
+        <input type="file" class="form-control">
+    </div>
+    <div class="mt-3">
+        <div>ราคา</div>
+        <input type="text" class="form-control" type="number">
+    </div>
+    <div class="mt-3">
+        <div>หมายเหตุ</div>
+        <input type="text" class="form-control">
+    </div>
+    <div class="mt-3">
+        <div>หมวด</div>
+        <input type="radio" name="foodtype" value="food">อาหาร
+        <input type="radio" name="foodtype" value="drink">เครื่องดื่ม
+    </div>
+    <button class="mt-3 btn btn-primary">
+        <i class="fa fa-check me-2"></i>บันทึก
+    </button>
+</app-mymodal>
