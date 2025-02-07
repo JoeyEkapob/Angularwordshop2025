@@ -140,6 +140,8 @@ export class FoodComponent {
     this.foodtype='food';
     this.id = 0
     this.img = '';
+    const img = document.getElementById('img') as HTMLInputElement
+    img.value
   }
   async remove(item:any){
     try{
@@ -176,6 +178,10 @@ export class FoodComponent {
     this.remark = item.remark
     this.price = item.price 
     this.img = item.img
+    this.file = undefined;
+
+    const img = document.getElementById('img') as HTMLInputElement
+    img.value
 
    
   }
