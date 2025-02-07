@@ -36,7 +36,8 @@ module.exports = {
         } catch (e) {
             return res.status(500).send({ error: e.message })
         }
-    }, list: async (req, res) => {
+    },
+     list: async (req, res) => {
         try {
             const sql = `SELECT Food.*, FoodType.name AS food_type_name FROM Food LEFT JOIN FoodType ON Food.foodtypeid = FoodType.id WHERE Food.status = 'use' ORDER BY Food.id DESC; ;`;;
             const [rows] = await pool.query(sql)
@@ -44,7 +45,8 @@ module.exports = {
         } catch (e) {
             return res.status(500).send({ error: e.message })
         }
-    },remove:async (req,res)=>{
+    },
+    remove:async (req,res)=>{
         try{
             const sql  = `UPDATE Food SET status = ?  WHERE id = ?`;
             const values  = ['delete',parseInt(req.params.id)]
@@ -53,11 +55,12 @@ module.exports = {
         }catch(e){
             return res.status(500).send({error:e.message})
         }
-    },update:async (req,res)=>{
+    },
+    update:async (req,res)=>{
         try{
             let img = req.body.img;
             if(img === undefined){
-                const row = `SELECT * FROM FOOD WHERE id = ?`
+                const row = `SELECT * FROM Food WHERE id = ?`
                 const values = [req.body.id]
                 const [rows] = await pool.query(sql,values)
 
