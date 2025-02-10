@@ -100,19 +100,21 @@ export class FoodComponent {
  async save(){
     try{
 
-      const filename = await this.uploadfile()
+       const filename = await this.uploadfile() 
+    
     
       const payload ={
         foodtypeid : parseInt(this.foodtypeid.toString()),
-
         name:this.name,
-        img:filename,
+        img: filename ?? '' ,
         price :this.price,
         remark:this.remark,
         foodtype:this.foodtype,
         id:this.id,
 
       }
+
+   /* return console.log(payload) */
       if(this.id > 0){
         this.http.put(config.apiServer +'/api/food/update',payload).subscribe((res:any)=>{
           this.fetchdata()
@@ -141,7 +143,7 @@ export class FoodComponent {
     this.id = 0
     this.img = '';
     const img = document.getElementById('img') as HTMLInputElement
-    img.value
+    img.value = ''
   }
   async remove(item:any){
     try{
@@ -169,9 +171,9 @@ export class FoodComponent {
     }
   }
   edit(item:any){
-    /* console.log(item.id)
-    return */
-  this.id = item.id
+ /*    console.log(item)
+    return  */
+    this.id = item.id
     this.name = item.name
     this.foodtypeid = item.foodtypeid
     this.foodtype= item.foodtype
@@ -181,8 +183,34 @@ export class FoodComponent {
     this.file = undefined;
 
     const img = document.getElementById('img') as HTMLInputElement
-    img.value
+    img.value = '';
 
    
+  }
+  filterfood(){
+    this.filter('food')
+
+  }
+  filterdrink(){
+    this.filter('drink')
+  }
+  filterall(){
+    this.fetchdata()
+  }
+  filter(foodtype:string){
+ /*    console.log(foodtype)
+    return */
+   
+    try{
+      this.http.post(config.apiServer + '/api/food/filter',{foodtype}).subscribe((res:any)=>{
+        this.foods = res.result
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error',
+      })
+    }
   }
 }

@@ -40,7 +40,9 @@ app.post('/api/food/create',(req,res)=> foodcontroller.create(req,res))
 app.post('/api/food/upload',(req,res)=>foodcontroller.upload(req,res))
 app.post('/api/food/list',(req,res) => foodcontroller.list(req,res))
 app.delete('/api/food/remove/:id',(req,res)=>foodcontroller.remove(req,res))
-app.put('/api/food/update',(req,res)=>foodcontroller.upload(req,res))
+app.put('/api/food/update',(req,res)=>foodcontroller.update2(req,res))
+
+app.post('/api/food/filter',(req,res)=>foodcontroller.filter(req,res))
 
 
 app.listen(3000,()=>{

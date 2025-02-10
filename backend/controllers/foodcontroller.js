@@ -1,5 +1,4 @@
 const pool = require('./config/db');
-const { list } = require('./foodtypecontroller');
 
 module.exports = {
     create: async (req, res) => {
@@ -18,7 +17,7 @@ module.exports = {
     upload: async (req, res) => {
         try {
 
-            /*     return console.log(req.files.img) */
+             /* return console.log(req.files.img) */
             if (req.files.img !== undefined) {
                 const img = req.files.img;
                 const filename = img.name
@@ -39,7 +38,7 @@ module.exports = {
     },
      list: async (req, res) => {
         try {
-            const sql = `SELECT Food.*, FoodType.name AS food_type_name FROM Food LEFT JOIN FoodType ON Food.foodtypeid = FoodType.id WHERE Food.status = 'use' ORDER BY Food.id DESC; ;`;;
+            const sql = `SELECT Food.*, FoodType.name AS food_type_name FROM Food LEFT JOIN FoodType ON Food.foodtypeid = FoodType.id WHERE Food.status = 'use' ORDER BY Food.id DESC`
             const [rows] = await pool.query(sql)
             return res.send({ result: rows })
         } catch (e) {
@@ -57,22 +56,68 @@ module.exports = {
         }
     },
     update:async (req,res)=>{
-        try{
-            let img = req.body.img;
-            if(img === undefined){
+     
+       
+     try{
+         /*  let img = req.body.img;
+            console.log(req) */
+           /*  const img = req.body.img;
+            if(img === ''){
                 const row = `SELECT * FROM Food WHERE id = ?`
                 const values = [req.body.id]
-                const [rows] = await pool.query(sql,values)
+                const [rows] = await pool.query(row,values)
 
-                img = row.img
-            }
-            const sql  = `UPDATE Food SET foodtypeid = ? , foodtype = ? , name = ? , price = ? , remark = ? , img = ?  WHERE id = ?`;
+                img = rows.img
+            }  */
+           /*  const sql  = `UPDATE Food SET foodtypeid = ? , foodtype = ? , name = ? , price = ? , remark = ? , img = ?  WHERE id = ?`;
             const values  = [req.body.foodtypeid,req.body.foodtype,req.body.name,req.body.price,req.body.remark ,req.body.img ?? '',req.body.id]
-            const [rows] = await pool.query(sql,values)
-            return res.send({message:'success'})
+            const [rows] = await pool.query(sql,values)  */
+            return res.send({message:req.body.img})
 
         }catch(e){
             return res.status(500).send({error:e.message})
+        } 
+    },
+    update2:async (req,res)=>{
+        try{
+            let img = req.body.img;
+
+            if(img === undefined){
+                const row = `SELECT img FROM Food WHERE id = ?`
+                const values = [req.body.id]
+                const [rows] = await pool.query(row,values)
+       
+                img = rows.img
+              
+        }
+        const sql  = `UPDATE Food SET foodtypeid = ? , foodtype = ? , name = ? , price = ? , remark = ? , img = ?  WHERE id = ?`;
+        const values  = [req.body.foodtypeid,req.body.foodtype,req.body.name,req.body.price,req.body.remark ,req.body.img ?? '',req.body.id]
+        const [rows] = await pool.query(sql,values) 
+
+        return res.send({message:'success'})
+
+        } catch(e){
+            return res.status(500).send({error:e.message})
+
+        }
+    
+
+    },
+    filter : async (req,res)=>{
+        try{
+            /* console.log(req.body.foodtype)
+            return */
+            const sql = `SELECT * FROM Food WHERE foodtype = ? AND status = ? ORDER BY id DESC`;
+            const values = [req.body.foodtype,'use']
+            const [rows] = await pool.query(sql,values) 
+
+           /*  console.log(values) */
+
+            return res.send({result:rows})
+
+        } catch(e){
+            return res.status(500).send({error:e.message})
+                
         }
     }
 }

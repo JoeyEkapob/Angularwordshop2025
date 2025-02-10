@@ -4,6 +4,7 @@ import { FoodtypeComponent } from './foodtype/foodtype.component';
 import { FoodsizeComponent } from './foodsize/foodsize.component';
 import { TasteComponent } from './taste/taste.component';
 import { FoodComponent } from './food/food.component';
+import { SaleComponent } from './sale/sale.component';
 
 
 
@@ -26,6 +27,10 @@ export const routes: Routes = [{
     path:'food',
     component:FoodComponent
 
+},
+{
+    path:'sale',
+    component:SaleComponent
 }
   
 ];
