@@ -1,5 +1,4 @@
 const pool = require('./config/db');
-const { update } = require('./foodtypecontroller');
 
 module.exports = {
     create : async (req,res)=>{

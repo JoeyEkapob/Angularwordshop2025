@@ -15,12 +15,13 @@ module.exports = {
 
           
               const user = rows[0]; 
-             /*  console.log(user) */
+             /* console.log(user.username , user.id) 
+             return */
               if(rows != null){
                 const key = process.env.SECRET_KEY
                 const token = jwt.sign(user,key,{expiresIn:"30d"})
-
-                return res.send({token:token,name: user.name})
+            /*  console.log(user.username ,user.id) */
+                return res.send({token:token, name: user.username , id : user.id})
               }
           
             return res.status(401).send({message : "unauthorized"})

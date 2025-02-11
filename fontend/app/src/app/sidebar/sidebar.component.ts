@@ -31,6 +31,7 @@ ngOnInit(){
     if(button.isConfirmed){
       localStorage.removeItem('angular_token')
       localStorage.removeItem('angular_username')
+      localStorage.removeItem('angular_id')
 
       location.reload()
     }

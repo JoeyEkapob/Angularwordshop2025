@@ -44,7 +44,8 @@ export class SigninComponent {
         this.http.post('http://localhost:3000/api/user/signin',payload).subscribe((res:any)=>{
           this.token = res.token;
           localStorage.setItem('angular_token',this.token)
-          localStorage.setItem('angular_username',res.username)
+          localStorage.setItem('angular_username',res.name)
+          localStorage.setItem('angular_id',res.id)
      
 
           location.reload()

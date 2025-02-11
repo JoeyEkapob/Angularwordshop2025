@@ -11,6 +11,7 @@ const foodtypecontroller = require('./controllers/foodtypecontroller')
 const foodsizecontroller = require('./controllers/foodsizecontroller')
 const tastecontroller = require('./controllers/tastecontroller')
 const foodcontroller = require('./controllers/foodcontroller')
+const saletempconttroller = require('./controllers/saletempconttroller')
 
 app.use(cors())
 app.use(fileUpload())
@@ -43,6 +44,9 @@ app.delete('/api/food/remove/:id',(req,res)=>foodcontroller.remove(req,res))
 app.put('/api/food/update',(req,res)=>foodcontroller.update2(req,res))
 
 app.post('/api/food/filter',(req,res)=>foodcontroller.filter(req,res))
+app.post('/api/saletemp/create',(req,res)=>{saletempconttroller.create(req,res)})
+app.post('/api/saletemp/list',(req,res)=>saletempconttroller.list(req,res))
+app.delete('/api/saletemp/clear/:userId',(req,res)=>saletempconttroller.clear(req,res))
 
 
 app.listen(3000,()=>{
