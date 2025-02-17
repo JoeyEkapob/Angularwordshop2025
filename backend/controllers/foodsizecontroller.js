@@ -54,5 +54,22 @@ module.exports = {
         }catch(e){
             return res.status(500).send({error:e.message})
         }
+    },
+
+    filter:async (req,res)=>{
+        try{
+            const sql = `SELECT * FROM FoodSize WHERE foodtypeid = ? AND status = ? ORDER BY moneyadded ASC;
+`
+            const values = [req.body.foodtypeid,"use"]
+            const [row] = await pool.query(sql,values)
+            
+           /*  console.log(req.body.foodtypeid)
+            return */
+            return res.send({result:row})
+
+
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
     }
 }

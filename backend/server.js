@@ -47,7 +47,11 @@ app.post('/api/food/filter',(req,res)=>foodcontroller.filter(req,res))
 app.post('/api/saletemp/create',(req,res)=>{saletempconttroller.create(req,res)})
 app.post('/api/saletemp/list',(req,res)=>saletempconttroller.list(req,res))
 app.delete('/api/saletemp/clear/:userId',(req,res)=>saletempconttroller.clear(req,res))
+app.delete('/api/saletemp/remove/:foodid/:userid',(req,res)=>{saletempconttroller.remove(req,res)})
+app.put('/api/saletemp/changeqty',(req,res)=>{saletempconttroller.changeqty(req,res)})
 
+
+app.post('/api/foodsize/filter/',(req,res)=>foodsizecontroller.filter(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')
