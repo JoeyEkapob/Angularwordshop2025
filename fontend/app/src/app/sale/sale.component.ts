@@ -181,11 +181,14 @@ export class SaleComponent {
   }
 
   choosefoodsize(item:any){
-  /*   console.log(foodtypeid)
-    return */
-    let foodtypeid: number = item.foodtypeid
+   /*  console.log(item)
+  
+    return  */
+   let foodtypeid: number = item.foodtypeid
     this.saletempid = item.id;
-    this.foodname = item.food.name
+    this.foodname = item.name 
+
+      
     try{
       this.http.post(config.apiServer + '/api/foodsize/filter/',{foodtypeid}).subscribe((res:any)=>{
         this.foodsizes = res.result
@@ -196,7 +199,9 @@ export class SaleComponent {
         qty:item.qty,
         saletempid : item.id,
       }
-      this.http.post(config.apiServer + '/api/saletemp/createdetail',payload).subscribe((res:any)=>{})
+      this.http.post(config.apiServer + '/api/saletemp/createdetail',payload).subscribe((res:any)=>{
+        this.fetchdatasaletempdetail()
+      })
     }catch(e:any){
       Swal.fire({
         title:'error',
@@ -205,4 +210,12 @@ export class SaleComponent {
       })
     }
   }
+
+  fetchdatasaletempdetail(){
+    let saletempid = this.saletempid
+    this.http.post(config.apiServer + '/api/saletemp/listsaletempdetail',{saletempid}).subscribe((res:any)=>{
+      this.saletempdetail = res.result
+    })
+  }
+ 
 }

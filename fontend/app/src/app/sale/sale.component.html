@@ -81,16 +81,35 @@
     </div>
 </div>
 
-<app-mymodal modalId="modalFoodSize" title="เลือกขนาด">
-    <div class="text-center">
-        @for (item of foodsizes; track $index) {
-            <button class="btn btn-primary btn-lg me-2">
-                {{item.name}}
-                @if (item.moneyadded > 0){
-                    + {{item.moneyadded}} บาท
-                }
-            </button>
-        }
-    </div>
+<app-mymodal modalId="modalFoodSize" title="เลือกขนาด" modalSize="modal-lg" >
+    <div class="h4">{{foodname}}</div>
+    <table class="mt-3 table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>รายการ</th>
+                <th width="100px">จำนวน</th>
+                <th width="250px">เลือกขนาด</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of saletempdetail; track $index) {
+                <tr>
+                    <td>{{item.food_name}}</td>
+                    <td class="text-end">1</td>
+                    <td class="text-center">
+                        @for (item of foodsizes; track $index) {
+                            <button class="btn btn-primary btn-lg me-2">
+                                {{item.name}}
+                                @if (item.moneyadded > 0){
+                                    + {{item.moneyadded}} บาท
+                                }
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
 
 </app-mymodal>

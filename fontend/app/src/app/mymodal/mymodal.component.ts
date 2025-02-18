@@ -9,4 +9,5 @@ import { Component, Input, Output } from '@angular/core';
 export class MymodalComponent {
   @Input() modalId: string =''
   @Input() title: string=''
+  @Input() modalSize: string=''
 }
