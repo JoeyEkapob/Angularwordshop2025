@@ -51,6 +51,7 @@ app.delete('/api/saletemp/remove/:foodid/:userid',(req,res)=>{saletempconttrolle
 app.put('/api/saletemp/changeqty',(req,res)=>{saletempconttroller.changeqty(req,res)})
 app.post('/api/saletemp/createdetail',(req,res)=>saletempconttroller.createDetail(req,res))
 app.post('/api/saletemp/listsaletempdetail',(req,res)=>saletempconttroller.listsaletempdetail(req,res))
+app.post('/api/saletemp/updatefoodsize',(req,res)=>saletempconttroller.updateFoodsize(req,res))
 
 
 

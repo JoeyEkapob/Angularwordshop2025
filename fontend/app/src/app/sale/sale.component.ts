@@ -185,23 +185,28 @@ export class SaleComponent {
   
     return  */
    let foodtypeid: number = item.foodtypeid
-    this.saletempid = item.id;
+   /*  this.saletempid = item.id;
     this.foodname = item.name 
-
+    console.log(saletempid) */
       
     try{
       this.http.post(config.apiServer + '/api/foodsize/filter/',{foodtypeid}).subscribe((res:any)=>{
         this.foodsizes = res.result
       })
-
+    /*   console.log(item) */
       const payload = {
         foodid : item.foodid,
         qty:item.qty,
-        saletempid : item.id,
+        saletempid : item.idsaletemp,
       }
+     /*  console.log(payload)
+      return */
+
       this.http.post(config.apiServer + '/api/saletemp/createdetail',payload).subscribe((res:any)=>{
         this.fetchdatasaletempdetail()
       })
+
+
     }catch(e:any){
       Swal.fire({
         title:'error',
@@ -215,7 +220,44 @@ export class SaleComponent {
     let saletempid = this.saletempid
     this.http.post(config.apiServer + '/api/saletemp/listsaletempdetail',{saletempid}).subscribe((res:any)=>{
       this.saletempdetail = res.result
+      this.computeamount()
     })
   }
- 
+  selectedfoodsize(foodsizeid:any,saletempid:number){
+    try{
+      const payload ={
+        saletempid : saletempid,
+        foodsizeid: foodsizeid
+      }
+    /*  console.log(foodsizeid) 
+       console.log(saletempid)  */
+        /*  return */
+      this.http.post(config.apiServer + '/api/saletemp/updatefoodsize',payload).subscribe((res:any)=> {
+        this.fetchdatasaletempdetail();
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error'
+      })
+    }
+  }
+
+  computeamount(){
+    this.amount = 0
+
+    for(let i = 0 ; i < this.saletemps.length;i++){
+      const item = this.saletemps[i]
+      const totalperrow = item.qty * item.price
+
+      for(let j = 0 ; j < item.saletempdetail.length; j++){
+        this.amount += item.saletempdetail[j].addedmoney
+      }
+      this.amount += totalperrow
+
+
+    }
+    console.log(this.saletemps)
+  }
 }

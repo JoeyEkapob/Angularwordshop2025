@@ -1,5 +1,6 @@
 const { error } = require('console');
 const pool = require('./config/db');
+const { updateSourceFile } = require('typescript');
 
 module.exports = {
     create: async (req, res) => {
@@ -41,11 +42,16 @@ module.exports = {
         try {
             /*  console.log(req.body.userId)
              return */
-            const sql = `SELECT  SaleTemp.*,Food.* FROM SaleTemp LEFT JOIN Food ON SaleTemp.foodid = Food.id WHERE userid = ? ORDER BY SaleTemp.id DESC `
+            const sql = `SELECT SaleTemp.id as idsaletemp , SaleTemp.* ,Food.* ,SaleTempDetail.* FROM SaleTemp 
+            INNER JOIN  Food ON SaleTemp.foodid = Food.id 
+            INNER JOIN SaleTempDetail ON SaleTempDetail.saletempid = SaleTemp.id
+
+            WHERE userid = ? ORDER BY SaleTemp.id DESC `
             const values = [req.body.userId]
             const [row] = await pool.query(sql, values)
-            /* console.log(req.body.userId) */
-            return res.send({ results: row })
+        /*   console.log(row) 
+          return */
+          return res.send({ results: row }) 
         } catch (e) {
             return res.status(500).send({ error: e.message })
 
@@ -158,14 +164,36 @@ module.exports = {
     listsaletempdetail: async (req, res) => {
         try {
             const sql = `SELECT std.*, f.name AS food_name,  f.price AS food_price  FROM SaleTempDetail AS std JOIN Food AS f ON std.foodid = f.id 
-                                WHERE std.saletempid = ? ORDER BY std.id DESC;`
-            await pool.query(sql, [parseInt(req.body.saletempid)])
-
+                                WHERE std.saletempid = ? ORDER BY std.id ASC;`
+            const [rows] = await pool.query(sql, [parseInt(req.body.saletempid)])
+            /* console.log(rows)
+            return */
             return res.send({ result: rows })
 
         } catch (e) {
 
             return res.status(500).send({ error: e.message })
+        }
+    },
+    updateFoodsize: async (req, res) => {
+     
+        try{
+            const sql = `SELECT * FROM FoodSize WHERE id = ?`
+            const [row] = await pool.query(sql,[req.body.foodsizeid])
+          /*   console.log(req.body.foodsizeid)
+            console.log(req.body.saletempid)
+           
+            return  */
+
+            const sql2 = `UPDATE SaleTempDetail SET addedmoney = ? WHERE id = ?`
+            await pool.query(sql2, [row[0].moneyadded, req.body.saletempid]);
+
+            
+
+            return res.send({message:'success'})
+        }catch(e){
+            return res.status(500).send({ error: e.message })
+            
         }
     }
 
