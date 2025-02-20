@@ -42,16 +42,22 @@ module.exports = {
         try {
             /*  console.log(req.body.userId)
              return */
-            const sql = `SELECT SaleTemp.id as idsaletemp , SaleTemp.* ,Food.* ,SaleTempDetail.* FROM SaleTemp 
-            INNER JOIN  Food ON SaleTemp.foodid = Food.id 
-            INNER JOIN SaleTempDetail ON SaleTempDetail.saletempid = SaleTemp.id
-
-            WHERE userid = ? ORDER BY SaleTemp.id DESC `
+            const sql = `SELECT 
+                        SaleTemp.id as saletemp_id,
+                        SaleTemp.*, 
+                        Food.*, 
+                        (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', id, 'foodid', foodid, 'saletempid', saletempid)) 
+                        FROM SaleTempDetail 
+                        WHERE SaleTempDetail.saletempid = SaleTemp.id) AS saletempdetail
+                    FROM SaleTemp 
+                    LEFT JOIN Food ON SaleTemp.foodid = Food.id 
+                    WHERE SaleTemp.userid = ? 
+                    ORDER BY SaleTemp.id DESC;`
             const values = [req.body.userId]
             const [row] = await pool.query(sql, values)
-        /*   console.log(row) 
-          return */
-          return res.send({ results: row }) 
+            /*   console.log(row) 
+              return */
+            return res.send({ results: row })
         } catch (e) {
             return res.status(500).send({ error: e.message })
 
@@ -129,22 +135,14 @@ module.exports = {
             const foodid = req.body.foodid
             const saletempid = req.body.saletempid
 
-            /*  console.log(qty)
-             console.log(foodid)
-             console.log(saletempid)
- 
-             return */
 
             const sql = `SELECT * FROM SaleTempDetail WHERE foodid = ? AND saletempid = ? `
             const values = [foodid, saletempid]
             const [olddata] = await pool.query(sql, values)
 
+         /*    console.log(olddata)
 
-
-
-            /* 
-                 console.log('6')
-                 console.log(olddata[0]) */
+            return */
 
             if (olddata.length < qty) {
 
@@ -176,24 +174,24 @@ module.exports = {
         }
     },
     updateFoodsize: async (req, res) => {
-     
-        try{
-            const sql = `SELECT * FROM FoodSize WHERE id = ?`
-            const [row] = await pool.query(sql,[req.body.foodsizeid])
-          /*   console.log(req.body.foodsizeid)
-            console.log(req.body.saletempid)
-           
-            return  */
+
+        try {
+            const sql = `SELECT * FROM FoodSize WHERE id = ?  LIMIT 1`
+            const [row] = await pool.query(sql, [req.body.foodsizeid])
+            /*   console.log(req.body.foodsizeid)
+              console.log(req.body.saletempid)
+             
+              return  */
 
             const sql2 = `UPDATE SaleTempDetail SET addedmoney = ? WHERE id = ?`
             await pool.query(sql2, [row[0].moneyadded, req.body.saletempid]);
 
-            
 
-            return res.send({message:'success'})
-        }catch(e){
+
+            return res.send({ message: 'success' })
+        } catch (e) {
             return res.status(500).send({ error: e.message })
-            
+
         }
     }
 

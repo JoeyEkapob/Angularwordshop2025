@@ -95,7 +95,7 @@
         <tbody>
             @for (item of saletempdetail; track $index) {
                 <tr>
-                    <td>{{item.id}}</td>
+                    <td>{{$index + 1}}</td>
                     <td>{{item.food_name}}</td>
                     <td class="text-end">1</td>
                     <td class="text-center">
@@ -111,7 +111,7 @@
                                             {{foodsize.name}} + {{foodsize.moneyadded}} บาท
                                         </button>
                                     }
-                                    + {{foodsize.moneyadded}} บาท
+                                   <!--  + {{foodsize.moneyadded}} บาท -->
                                 }
                          
                         }
