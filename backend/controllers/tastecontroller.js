@@ -51,5 +51,15 @@ module.exports = {
             res.status(500).send({error:e.message})
 
         }
+    },
+    listbyfoodtypeid: async (req,res)=>{
+        try{
+            const sql = `SELECT * FROM Taste WHERE foodtypeid = ? , status = ? ORDER BY name ASC`
+            const rows = await pool.query([req.params.foodtypeid,'use'])
+
+            return res.send({result : rows})
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
     }
 }

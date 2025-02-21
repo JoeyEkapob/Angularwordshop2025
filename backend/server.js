@@ -36,6 +36,7 @@ app.post('/api/taste/create',(req,res)=>tastecontroller.create(req,res))
 app.post('/api/taste/list',(req,res)=> tastecontroller.list(req,res))
 app.delete('/api/taste/remove/:id',(req,res)=>tastecontroller.remove(req,res))
 app.put('/api/taste/update',(req,res)=>tastecontroller.update(req,res))
+app.post('/api/taste/listbyfoodtypeid',(req,res)=>tastecontroller.listbyfoodtypeid(req,res))
 
 app.post('/api/food/create',(req,res)=> foodcontroller.create(req,res))
 app.post('/api/food/upload',(req,res)=>foodcontroller.upload(req,res))

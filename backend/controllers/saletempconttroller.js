@@ -46,7 +46,7 @@ module.exports = {
                         SaleTemp.id as saletemp_id,
                         SaleTemp.*, 
                         Food.*, 
-                        (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', id, 'foodid', foodid, 'saletempid', saletempid)) 
+                        (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', id, 'foodid', foodid, 'saletempid', saletempid,'addedmoney',addedmoney,'tasteid',tasteid,'foodid',foodid)) 
                         FROM SaleTempDetail 
                         WHERE SaleTempDetail.saletempid = SaleTemp.id) AS saletempdetail
                     FROM SaleTemp 

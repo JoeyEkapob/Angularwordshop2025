@@ -24,6 +24,7 @@ export class SaleComponent {
   saletempid: number = 0
   foodname: string = ''
   saletempdetail: any = []
+  tastes:any =[]
 
 
   ngOnInit() {
@@ -221,7 +222,7 @@ export class SaleComponent {
     return  */
     this.http.post(config.apiServer + '/api/saletemp/listsaletempdetail', { saletempid }).subscribe((res: any) => {
       this.saletempdetail = res.result
-      /*   this.computeamount()  */
+        this.computeamount()
     })
   }
   selectedfoodsize(foodsizeid: number, saletempid: number) {
@@ -252,22 +253,37 @@ export class SaleComponent {
     for (let i = 0; i < this.saletemps.length; i++) {
       const item = this.saletemps[i]
       const totalperrow = item.qty * item.price
+      const jsonsaletempdetail = JSON.parse(item.saletempdetail);
 
-      for (let j = 0; j < item.saletempdetail.length; j++) {
-        this.amount += item.saletempdetail[j].addedmoney
-      }
-    console.log(totalperrow)
+    /*   console.log(jsonsaletempdetail) */
+        for (let j = 0; j < jsonsaletempdetail.length; j++) {
+
+     this.amount += jsonsaletempdetail[j].addedmoney  
+   
+    }
+
       
       this.amount += totalperrow
-      console.log(this.amount)
-      return
+  
+   
      
 
     }
-    /* console.log(this.amount)
-    console.log(this.saletemps)
+  
 
-    return */
-    console.log(this.saletemps)
+   console.log(this.saletemps) 
+  }
+  fetchdatataste(foodtypeid:number){
+    try{
+      this.http.post(config.apiServer +'/api/taste/listbyfoodtypeid/',foodtypeid).subscribe((res:any)=>{
+        this.tastes = res.result
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error' 
+      })
+    }
   }
 }
