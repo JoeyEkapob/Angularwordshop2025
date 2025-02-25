@@ -164,9 +164,32 @@ module.exports = {
             const sql = `SELECT std.*, f.name AS food_name,  f.price AS food_price  FROM SaleTempDetail AS std JOIN Food AS f ON std.foodid = f.id 
                                 WHERE std.saletempid = ? ORDER BY std.id ASC;`
             const [rows] = await pool.query(sql, [parseInt(req.body.saletempid)])
-            /* console.log(rows)
-            return */
-            return res.send({ result: rows })
+       /*       console.log(rows)
+             return res.send({ result: rows }) */
+          /*   return  */
+
+            const arr = []
+
+           for(let i = 0 ;i < rows.length; i++){
+
+                const  item = rows[i]
+           /*  console.log(item)
+        } */
+                if(item.tasteid != null){
+                    const sql2 = `SELECT * FROM Taste WHERE id = ? LIMIT 1`
+                    const [rows2] = await pool.query(sql2 ,[item.tasteid])
+                 /*    console.log( rows2[0].name) */
+                   
+                    item.tastename = rows2[0].name 
+                } 
+             
+                arr.push(item)
+            } 
+ 
+
+           /*  console.log(arr)  
+           return   */
+            return res.send({ result: arr })
 
         } catch (e) {
 
@@ -193,7 +216,32 @@ module.exports = {
             return res.status(500).send({ error: e.message })
 
         }
-    }
+    },
+    updatetaste:async (req,res)=>{
+        try{
+         const sql = `UPDATE SaleTempDetail SET tasteid = ? WHERE id = ? ` 
+           /*  console.log(sql)
+            console.log(req.body.tasteid)
+            console.log(req.body.saletempid)
+         return */
+         const values = [req.body.tasteid,req.body.saletempid]
+         const [rows] = await pool.query(sql, values)  
+         /* console.log(rows)
+         return  */
+         return res.send({message : 'success'})
 
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
+    },
+    newsaletempdetail:async (req,res)=>{
+        try{
+            const sql = `INSERT INTO  SaleTempDetail (saletempdetail,foodid) VALUES (?,?)`
+            await pool.query(sql, [req.body.saletempid, req.body.foodid])
+            return res.send({message : 'success'})
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
+    }
 
 }

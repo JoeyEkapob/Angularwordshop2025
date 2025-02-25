@@ -25,6 +25,7 @@ export class SaleComponent {
   foodname: string = ''
   saletempdetail: any = []
   tastes:any =[]
+  foodid:number = 0
 
 
   ngOnInit() {
@@ -187,7 +188,9 @@ export class SaleComponent {
     let foodtypeid: number = item.foodtypeid
     this.saletempid = item.saletemp_id
     this.foodname = item.name
+    this.foodid = item.food.id
 
+    this.fetchdatataste(foodtypeid)
     try {
       this.http.post(config.apiServer + '/api/foodsize/filter/', { foodtypeid }).subscribe((res: any) => {
         this.foodsizes = res.result
@@ -271,11 +274,14 @@ export class SaleComponent {
     }
   
 
-   console.log(this.saletemps) 
+   /* console.log(this.saletemps)  */
   }
   fetchdatataste(foodtypeid:number){
+
+    /*  console.log(foodtypeid)
+    return  */
     try{
-      this.http.post(config.apiServer +'/api/taste/listbyfoodtypeid/',foodtypeid).subscribe((res:any)=>{
+      this.http.post(config.apiServer +'/api/taste/listbyfoodtypeid',{foodtypeid}).subscribe((res:any)=>{
         this.tastes = res.result
       })
     }catch(e:any){
@@ -283,6 +289,40 @@ export class SaleComponent {
         title:'error',
         text:e.message,
         icon:'error' 
+      })
+    }
+  }
+  selectedtaste(saletempid:number , tasteid:number){
+    try{
+      const payload = {
+        saletempid : saletempid,
+        tasteid:tasteid
+      }
+      this.http.post(config.apiServer + '/api/saletemp/updatetaste',payload).subscribe((res:any)=>{
+        this.fetchdatasaletempdetail();
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error'
+      })
+    }
+  }
+  newsaletempdetail(){
+    try{
+      const payload = {
+        saletempid : this.saletempid,
+        foodid: this.foodid
+      }
+      this.http.post(config.apiServer + '/api/saletemp/newsaletempdetail',payload).subscribe((res:any)=>{
+        this.fetchdatasaletempdetail()
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error'
       })
     }
   }

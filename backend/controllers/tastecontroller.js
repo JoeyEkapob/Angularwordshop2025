@@ -1,3 +1,4 @@
+const { error } = require('console');
 const pool = require('./config/db');
 
 module.exports = {
@@ -54,12 +55,14 @@ module.exports = {
     },
     listbyfoodtypeid: async (req,res)=>{
         try{
-            const sql = `SELECT * FROM Taste WHERE foodtypeid = ? , status = ? ORDER BY name ASC`
-            const rows = await pool.query([req.params.foodtypeid,'use'])
-
+            const sql = `SELECT * FROM Taste WHERE foodtypeid = ? AND status = ? ORDER BY name ASC`
+            const [rows] = await pool.query(sql,[req.body.foodtypeid,'use'])
+            /* console.log(rows)
+            return */
             return res.send({result : rows})
         }catch(e){
             return res.status(500).send({error:e.message})
         }
-    }
+    },
+    
 }
