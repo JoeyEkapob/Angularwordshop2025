@@ -52,11 +52,11 @@ module.exports = {
                     FROM SaleTemp 
                     LEFT JOIN Food ON SaleTemp.foodid = Food.id 
                     WHERE SaleTemp.userid = ? 
-                    ORDER BY SaleTemp.id DESC;`
+                    ORDER BY SaleTemp.id DESC`
             const values = [req.body.userId]
             const [row] = await pool.query(sql, values)
-            /*   console.log(row) 
-              return */
+              /* console.log(row) 
+              return  */
             return res.send({ results: row })
         } catch (e) {
             return res.status(500).send({ error: e.message })
@@ -76,11 +76,22 @@ module.exports = {
         }
     },
     remove: async (req, res) => {
+       /*  console.log(req.params.foodid)
+        return */
         try {
-            const sql = `DELETE FROM SaleTemp WHERE foodid = ? AND userid = ? `
+
+            const sql = `SELECT SaleTemp.*,SaleTempDetail.* FROM SaleTemp LEFT JOIN SaleTempDetail ON SaleTemp.id = SaleTempDetail.id  WHERE SaleTemp.foodid = ? AND SaleTemp.userid =? `
+            const [rows] = await pool.query(sql,[req.params.foodid,req.params.userid])
+            console.log(rows)
+            return
+            for(let i = 0;i < rows.length; i++){
+
+            }
+
+           /*  const sql = `DELETE FROM SaleTemp WHERE foodid = ? AND userid = ? `
             const values = [req.params.foodid, req.params.userid]
 
-            const [row] = await pool.query(sql, values)
+            const [row] = await pool.query(sql, values) */
             return res.send({ message: 'success' })
 
         } catch (e) {
@@ -187,8 +198,8 @@ module.exports = {
             } 
  
 
-           /*  console.log(arr)  
-           return   */
+          /*  console.log(arr)  
+           return */   
             return res.send({ result: arr })
 
         } catch (e) {
@@ -233,7 +244,7 @@ module.exports = {
         }catch(e){
             return res.status(500).send({error:e.message})
         }
-    },
+    } ,
     newsaletempdetail:async (req,res)=>{
         try{
             const sql = `INSERT INTO  SaleTempDetail (saletempdetail,foodid) VALUES (?,?)`
@@ -242,6 +253,17 @@ module.exports = {
         }catch(e){
             return res.status(500).send({error:e.message})
         }
+    } , 
+    removesaletempdetail: async (req,res)=>{
+        try{
+            const sql = `DELETE FROM SaleTempDetail WHERE id = ?  `
+            await pool.query(sql,parseInt(req.params.id))
+
+            return res.send({message:'success'})
+        }catch(e){
+            return res.status(500).send({ error :e.message})
+        }
     }
+
 
 }

@@ -100,6 +100,27 @@ export class SaleComponent {
       }
       this.http.post(config.apiServer + '/api/saletemp/list', payload).subscribe((res: any) => {
         this.saletemps = res.results
+
+        for( let i = 0; i < this.saletemps.length; i++){
+          const item = this.saletemps[i]
+          const jsonsaletempdetail = JSON.parse(item.saletempdetail);
+          if(item.saletempdetail.length > 0) {
+            item.qty = jsonsaletempdetail.length 
+           item.disabledQtyButton = true; 
+         }
+          console.log(jsonsaletempdetail)
+        }
+
+      /*   
+        for( let i = 0; i < this.saletemps.length; i++){
+            const item = this.saletemps[i]
+
+            if(item.saletempdetail.length > 0) {
+              item.qty = item.saletempdetail.length */
+         /*      item.disabledQtyButton = true; */
+         /*    }
+        } */
+        
         this.computeamount()
         /*  console.log(saletemps)  */
 
@@ -185,11 +206,17 @@ export class SaleComponent {
   }
 
   choosefoodsize(item: any) {
+    /* console.log(item.foodtypeid)
+    console.log(item.saletemp_id)
+    console.log(item.name)
+    console.log(item.food.id)
+    return */
     let foodtypeid: number = item.foodtypeid
     this.saletempid = item.saletemp_id
     this.foodname = item.name
-    this.foodid = item.food.id
-
+    this.foodid = item.foodid
+   /*  console.log('item')
+    return */
     this.fetchdatataste(foodtypeid)
     try {
       this.http.post(config.apiServer + '/api/foodsize/filter/', { foodtypeid }).subscribe((res: any) => {
@@ -317,9 +344,36 @@ export class SaleComponent {
       }
       this.http.post(config.apiServer + '/api/saletemp/newsaletempdetail',payload).subscribe((res:any)=>{
         this.fetchdatasaletempdetail()
+        this.fetchdatasaletemp()
       })
     }catch(e:any){
       Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error'
+      })
+    }
+  } 
+  async removesaletempdetail(id:number){
+   /* console.log(id)
+    return */
+     try{
+      const button = await Swal.fire({
+        title:'ยกเลิกรายการ',
+        text:'คุณต้องการยกเลิกใช่หริอไม่',
+        icon:'question',
+        showCancelButton:true,
+        showConfirmButton:true
+      })
+      
+      if(button.isConfirmed){
+        this.http.delete(config.apiServer + '/api/saletemp/removesaletempdetail/' + id).subscribe((res:any)=>{
+          this.fetchdatasaletempdetail()
+          this.fetchdatasaletemp()
+        })
+      }
+    }catch(e:any){
+      await Swal.fire({
         title:'error',
         text:e.message,
         icon:'error'

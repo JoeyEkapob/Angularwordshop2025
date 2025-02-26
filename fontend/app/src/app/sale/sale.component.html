@@ -43,10 +43,10 @@
                       <!--       <div>{{item.foodtypeid}}</div> -->
                             <div class="mt-2">
                                 <div class="input-group">
-                                    <button class="btn btn-primary" (click)="changeqty(item.id,'down')"><i
+                                    <button class="btn btn-primary" [disabled]="item.disabledQtyButton" (click)="changeqty(item.id,'down')"><i
                                             class="fa fa-minus"></i></button>
                                     <input class="form-control text-center disabled" disabled [value]="item.qty" />
-                                    <button class="btn btn-primary" (click)="changeqty(item.id,'up')"><i
+                                    <button class="btn btn-primary" [disabled]="item.disabledQtyButton" (click)="changeqty(item.id,'up')"><i
                                             class="fa fa-plus"></i></button>
 
                                 </div>
@@ -95,7 +95,7 @@
 
 <app-mymodal modalId="modalFoodSize" title="เลือกขนาด" modalSize="modal-xl" >
     <div class="h4">
-        <button class="btn btn-primary me-2" (click)="newsaletempdetail()"><i class="fa fa-plus me-2">เพิ่มจำนวน</i></button> {{foodname}}
+        <button class="btn btn-primary me-2" ><i class="fa fa-plus me-2">เพิ่มจำนวน</i></button> {{foodname}}
     </div>
     <table class="mt-3 table table-bordered table-striped">
         <thead>
@@ -111,7 +111,7 @@
             @for (item of saletempdetail; track $index) {
                 <tr>
                     <td class="text-center">
-                        <button class="btn btn-danger"><i class="fa fa-times"></i></button>
+                        <button class="btn btn-danger" (click)="removesaletempdetail(item.id)" ><i class="fa fa-times"></i></button>
                     </td>
                     <td>{{$index + 1}}</td>
                     <td>{{item.food_name}}</td>
