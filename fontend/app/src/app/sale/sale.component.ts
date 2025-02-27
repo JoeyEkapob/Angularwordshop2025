@@ -26,6 +26,43 @@ export class SaleComponent {
   saletempdetail: any = []
   tastes:any =[]
   foodid:number = 0
+  paytype:string = 'cash'
+  inputmoney:number = 0
+  returnmoney:number = 0
+
+  chengeinputmoney(inputmoney:number){
+    this.inputmoney = inputmoney
+    this.returnmoney = this.inputmoney - this.amount
+  }
+
+  selectedpaytype(paytype :string){
+    this.paytype = paytype;
+  }
+
+  getclassname(paytype : string){
+    let cssclass = 'btn btn-block btn-lg '
+
+    if(this.paytype == paytype){
+      cssclass += 'btn-secondary'
+    }else{
+      cssclass +='btn-outline-secondary'
+    }
+    return cssclass
+  }
+  getclassnameofbutton(inputmoney:number){
+    
+    let cssclass = 'btn btn-block btn-lg '
+
+    if(this.inputmoney == inputmoney){
+
+      cssclass += 'btn-secondary';
+    }else{
+      cssclass += 'btn-outline-secondary'
+    }
+
+    return cssclass
+  }
+
 
 
   ngOnInit() {
@@ -380,4 +417,26 @@ export class SaleComponent {
       })
     }
   }
+  async endsale(){
+    try{
+      const payload = {
+        userid:this.userId,
+        inputmoney : this.inputmoney,
+        amount : this.amount,
+        returnmoney :this.returnmoney,
+        paytype : this.paytype,
+        tableno : this.tableno
+      }
+      this.http.post(config.apiServer + '/api/saletemp/endsale',payload).subscribe((res:any)=>{
+        this.fetchdatasaletemp()
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error'
+      })
+    }
+  }
 }
+  

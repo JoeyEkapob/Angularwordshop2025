@@ -76,22 +76,42 @@ module.exports = {
         }
     },
     remove: async (req, res) => {
-       /*  console.log(req.params.foodid)
+       /* console.log(req.params.foodid)
+        console.log(req.params.userid)
         return */
         try {
 
-            const sql = `SELECT SaleTemp.*,SaleTempDetail.* FROM SaleTemp LEFT JOIN SaleTempDetail ON SaleTemp.id = SaleTempDetail.id  WHERE SaleTemp.foodid = ? AND SaleTemp.userid =? `
+            const sql = `SELECT 
+                        SaleTemp.*, 
+                        JSON_ARRAYAGG(SaleTempDetail.id) AS detail_ids
+                        FROM SaleTemp
+                        LEFT JOIN SaleTempDetail ON SaleTempDetail.saletempid = SaleTemp.id
+                        WHERE SaleTemp.foodid = ? 
+                        AND SaleTemp.userid = ?
+ `
             const [rows] = await pool.query(sql,[req.params.foodid,req.params.userid])
-            console.log(rows)
-            return
-            for(let i = 0;i < rows.length; i++){
 
+        /*  console.log(rows.length)
+            return  */
+           
+            const arr = JSON.parse(rows[0].detail_ids);
+           /*  console.log(arr)
+            return  */
+            for(let i = 0;i < arr.length; i++){
+
+                if(rows.length > 0){
+
+                    const saletempid = arr[i]
+                
+                    const sql2 = `DELETE FROM SaleTempDetail WHERE id = ?  `
+                    await pool.query(sql2,[saletempid])
+                }
             }
 
-           /*  const sql = `DELETE FROM SaleTemp WHERE foodid = ? AND userid = ? `
-            const values = [req.params.foodid, req.params.userid]
-
-            const [row] = await pool.query(sql, values) */
+            const sql3 = `DELETE FROM SaleTemp WHERE foodid = ? AND userid = ?`
+            await pool.query(sql3,[req.params.foodid,req.params.userid])
+            
+      
             return res.send({ message: 'success' })
 
         } catch (e) {
