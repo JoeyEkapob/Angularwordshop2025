@@ -429,6 +429,9 @@ export class SaleComponent {
       }
       this.http.post(config.apiServer + '/api/saletemp/endsale',payload).subscribe((res:any)=>{
         this.fetchdatasaletemp()
+
+        document.getElementById('modalEndSale_btnClose')?.click();
+        this.clearForm()
       })
     }catch(e:any){
       Swal.fire({
@@ -437,6 +440,12 @@ export class SaleComponent {
         icon:'error'
       })
     }
+  }
+  clearForm(){
+    this.paytype='cash',
+    this.inputmoney=0;
+    this.returnmoney=0;
+    this.amount=0;
   }
 }
   
