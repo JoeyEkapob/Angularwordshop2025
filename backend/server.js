@@ -12,6 +12,7 @@ const foodsizecontroller = require('./controllers/foodsizecontroller')
 const tastecontroller = require('./controllers/tastecontroller')
 const foodcontroller = require('./controllers/foodcontroller')
 const saletempconttroller = require('./controllers/saletempconttroller')
+const organizationcontroller = require('./controllers/organizationcontroller')
 
 app.use(cors())
 app.use(fileUpload())
@@ -57,6 +58,13 @@ app.post('/api/saletemp/updatetaste',(req,res)=> saletempconttroller.updatetaste
 app.post('/api/saletemp/newsaletempdetail',(req,res)=> saletempconttroller.newsaletempdetail(req,res)) 
 app.delete('/api/saletemp/removesaletempdetail/:id',(req,res)=> saletempconttroller.removesaletempdetail(req,res))
 app.post('/api/saletemp/endsale',(req,res)=>saletempconttroller.endsale(req,res))
+
+
+
+app.post('/api/organization/save',(req,res)=>organizationcontroller.create(req,res))
+app.post('/api/organization/info',(req,res)=>organizationcontroller.info(req,res))
+app.post('/api/organization/upload',(req,res)=>organizationcontroller.upload(req,res))
+app.get('/api/organization/list/:id',(req,res)=>organizationcontroller.list(req,res))
 
 
 app.post('/api/foodsize/filter/',(req,res)=>foodsizecontroller.filter(req,res))
