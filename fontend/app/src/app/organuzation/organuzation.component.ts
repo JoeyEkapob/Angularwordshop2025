@@ -68,9 +68,19 @@ export class OrganuzationComponent {
         return this.http.get(config.apiServer + `/api/organization/list/${response}`);
       })
     ).subscribe((updatedData: any) => {
-      console.log(updatedData)
+      /* console.log(updatedData) */
       /* this.organizationData = updatedData; */ // อัปเดตข้อมูลใน UI
-      
+      this.name = updatedData.name;
+      this.phone = updatedData.phone;
+      this.address = updatedData.address;
+      this.taxCode = updatedData.taxcode;
+      this.id = updatedData.id
+      this.logo = updatedData.logo
+      this.email =updatedData.email
+      this.website = updatedData.website
+      this.promptPay = updatedData.promptpay 
+      this.logoPath = config.apiServer + '/uploads/' + this.logo
+
       Swal.fire({
         icon: 'success',
         text: 'อัปเดตข้อมูลสำเร็จ!',

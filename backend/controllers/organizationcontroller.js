@@ -37,8 +37,8 @@ module.exports ={
             if(req.body.logo){
                 const fs = require('fs')
 
-                if(fs.existsSync(`uploads/${orgenizationsql.logo}`)){
-                    fs.unlinkSync(`uploads/${orgenizationsql.logo}`)
+                if(fs.existsSync(`uploads/${orgenizationsql[0].logo}`)){
+                    fs.unlinkSync(`uploads/${orgenizationsql[0].logo}`)
                 }
             }
             let result

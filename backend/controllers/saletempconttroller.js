@@ -55,8 +55,8 @@ module.exports = {
                     ORDER BY SaleTemp.id DESC`
             const values = [req.body.userId]
             const [row] = await pool.query(sql, values)
-            /* console.log(row) 
-            return  */
+              /* console.log(row) 
+            return   */ 
             return res.send({ results: row })
         } catch (e) {
             return res.status(500).send({ error: e.message })

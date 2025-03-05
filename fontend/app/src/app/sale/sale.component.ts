@@ -29,6 +29,21 @@ export class SaleComponent {
   paytype:string = 'cash'
   inputmoney:number = 0
   returnmoney:number = 0
+  billforpayurl : string = ''
+
+  ngOnInit() {
+    this.fetchData();
+    this.fetchdatasaletemp()
+
+    this.apiPath = config.apiServer;
+
+    const userId = localStorage.getItem('angular_id')
+
+    if (userId !== null) {
+      this.userId = parseInt(userId)
+      this.fetchdatasaletemp()
+    }
+  }
 
   chengeinputmoney(inputmoney:number){
     this.inputmoney = inputmoney
@@ -65,19 +80,7 @@ export class SaleComponent {
 
 
 
-  ngOnInit() {
-    this.fetchData();
-    this.fetchdatasaletemp()
-
-    this.apiPath = config.apiServer;
-
-    const userId = localStorage.getItem('angular_id')
-
-    if (userId !== null) {
-      this.userId = parseInt(userId)
-      this.fetchdatasaletemp()
-    }
-  }
+ 
 
   fetchData() {
     try {
@@ -136,18 +139,22 @@ export class SaleComponent {
         userId: this.userId
       }
       this.http.post(config.apiServer + '/api/saletemp/list', payload).subscribe((res: any) => {
+      /*   console.log(res.results) */
+       
         this.saletemps = res.results
-
+        console.log(this.saletemps)
+ 
         for( let i = 0; i < this.saletemps.length; i++){
           const item = this.saletemps[i]
+          if(item.saletempdetail){
           const jsonsaletempdetail = JSON.parse(item.saletempdetail);
           if(item.saletempdetail.length > 0) {
-            item.qty = jsonsaletempdetail.length 
+         item.qty = jsonsaletempdetail.length
            item.disabledQtyButton = true; 
          }
-          console.log(jsonsaletempdetail)
-        }
-
+        } 
+      }
+ /*   console.log(jsonsaletempdetail) */
       /*   
         for( let i = 0; i < this.saletemps.length; i++){
             const item = this.saletemps[i]
@@ -158,7 +165,7 @@ export class SaleComponent {
          /*    }
         } */
         
-        this.computeamount()
+      this.computeamount() 
         /*  console.log(saletemps)  */
 
         /*      this.amount = 0; */
@@ -170,7 +177,7 @@ export class SaleComponent {
    
            this.amount += qty * price 
          }  */
-        /*        this.computeamount()  */
+      
       })
 
     } catch (e: any) {
@@ -289,7 +296,7 @@ export class SaleComponent {
     return  */
     this.http.post(config.apiServer + '/api/saletemp/listsaletempdetail', { saletempid }).subscribe((res: any) => {
       this.saletempdetail = res.result
-        this.computeamount()
+ /*        this.computeamount() */
     })
   }
   selectedfoodsize(foodsizeid: number, saletempid: number) {
@@ -315,27 +322,51 @@ export class SaleComponent {
   }
 
   computeamount() {
+   /*  console.log(this.saletemps)
     this.amount = 0
+    console.log(this.saletemps)
+    if(this.saletemps.saletempdetail === undefined){
+   
+      for (let i = 0; i < this.saletemps.length; i++) {
+        console.log(this.saletemps[i])
 
-    for (let i = 0; i < this.saletemps.length; i++) {
-      const item = this.saletemps[i]
-      const totalperrow = item.qty * item.price
-      const jsonsaletempdetail = JSON.parse(item.saletempdetail);
+        const item = this.saletemps[i]
+        console.log(item)
 
-    /*   console.log(jsonsaletempdetail) */
+        const totalperrow = item.qty * item.price
+        this.amount += totalperrow
+      }
+   
+   
+    }else{ */
+  /*   console.log(this.saletemps)
+    console.log(this.saletemps.length) */
+    this.amount = 0
+    
+    console.log( this.saletemps) 
+      for (let i = 0; i < this.saletemps.length; i++) {
+       
+        const item = this.saletemps[i]
+    /*  console.log( item.qty ) 
+     console.log( item.price )  */
+
+        const totalperrow = item.qty * item.price
+        const jsonsaletempdetail = JSON.parse(item.saletempdetail);
         for (let j = 0; j < jsonsaletempdetail.length; j++) {
-
-     this.amount += jsonsaletempdetail[j].addedmoney  
+            this.amount += jsonsaletempdetail[j].addedmoney ?? 0  
    
-    }
 
-      
-      this.amount += totalperrow
+          } 
+        this.amount += totalperrow
+   /*    console.log( this.amount) */
+
+      }
+     /*  console.log( this.amount) */
+   /*  } */
+
   
-   
-     
 
-    }
+   
   
 
    /* console.log(this.saletemps)  */
@@ -446,6 +477,23 @@ export class SaleComponent {
     this.inputmoney=0;
     this.returnmoney=0;
     this.amount=0;
+  }
+  printbtllbeforepay(){
+    try{
+      const payload = {
+        userid : this.userId,
+        tableno : this.tableno
+      }
+      this.http.post(config.apiServer + '/api/saletemp/printbtllbeforepay',payload).subscribe((res:any)=>{
+        this.billforpayurl = res.url
+      })
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error'
+      })
+    }
   }
 }
   

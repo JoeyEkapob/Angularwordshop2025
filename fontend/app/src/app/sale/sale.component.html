@@ -11,6 +11,10 @@
                 class="fa fa-calendar ">เครื่องดื่ม</i></button>
         <button class="btn btn-primary mr-2" (click)="fetchData()"><i class="fa fa-check ">ทั้งหมด</i></button>
         <button class="btn btn-danger mr-2" (click)="clearallrow()"><i class="fa fa-check ">ลบรายการทั้งหมด</i></button>
+        @if (amount > 0) {
+            <button class="btn btn-outline-success me-2" (click)="printbtllbeforepay()"><i class="fa fa-priunt ">พิมพ์ใบแจ้งยอด</i></button>
+
+        }
 
         <div class="container-fluid">
             <div class="row">
