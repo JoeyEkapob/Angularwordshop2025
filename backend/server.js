@@ -58,6 +58,7 @@ app.post('/api/saletemp/updatetaste',(req,res)=> saletempconttroller.updatetaste
 app.post('/api/saletemp/newsaletempdetail',(req,res)=> saletempconttroller.newsaletempdetail(req,res)) 
 app.delete('/api/saletemp/removesaletempdetail/:id',(req,res)=> saletempconttroller.removesaletempdetail(req,res))
 app.post('/api/saletemp/endsale',(req,res)=>saletempconttroller.endsale(req,res))
+app.post('/api/saletemp/printbtllbeforepay',(req,res)=>saletempconttroller.printbillbeforepay(req,res))
 
 
 

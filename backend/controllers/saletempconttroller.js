@@ -1,6 +1,7 @@
 const { error } = require('console');
 const pool = require('./config/db');
 const { updateSourceFile } = require('typescript');
+const { json } = require('body-parser');
 
 module.exports = {
     create: async (req, res) => {
@@ -358,6 +359,174 @@ module.exports = {
 
         } catch (e) {
             return res.status(500).send({ error: e.message })
+        }
+    },
+    printbillbeforepay :async (req,res)=>{
+        try{
+            const sql = `SELECT * FROM Orgnization LIMIT 1 `
+            const [organization] = await pool.query(sql)
+
+            const sql2 = `SELECT 
+                                 s.*,
+                                    JSON_ARRAYAGG(
+                                        JSON_OBJECT(
+                                            'id', d.id,
+                                            'saletempid', d.saletempid,
+                                            'addedmoney', d.addedmoney,
+                                            'tasteid', d.tasteid,
+                                            'foodid', d.foodid
+                                        )
+                                    ) AS SaleTempDetails,
+                                    JSON_ARRAYAGG(
+                                        JSON_OBJECT(
+                                            'id', f.id,
+                                            'foodtypeid', f.foodtypeid,
+                                            'name', f.name,
+                                            'remark', f.remark,
+                                            'price', f.price,
+                                            'img', f.img,
+                                            'foodtype', f.foodtype,
+                                            'status', f.status
+                                        )
+                                    ) AS Food
+                            FROM SaleTemp s
+                            LEFT JOIN Food f ON f.id = s.foodId
+                            LEFT JOIN SaleTempDetail d ON s.id = d.saleTempId
+                         
+                            WHERE s.userId = ? AND s.tableNo = ?`
+
+            const values = [req.body.userid,req.body.tableno]
+          
+            const [SaleTemp] = await pool.query(sql2,values)
+
+            console.log(SaleTemp)
+            SaleTemp.map((item,index)=>{
+                const food = JSON.parse(item.food[index])
+                for(let i =0 ; i< food.length ; i++){
+                    console.log(item.food.name)
+                    console.log(item.food.price)
+                    console.log(item.qty)
+                }
+
+              
+               
+             
+           
+            
+                /* doc.text(item.food.name, padding, y);
+                doc.text(item.food.price, padding + 18, y, { align: 'right', width: 20 });
+                doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
+                doc.text((item.food.price * item.qty).toString(), padding + 55, y, { align: 'right' }); */
+
+            })
+            return
+            SaleTemp.map((item,index)=>{
+              /*   console.log(item) */
+                const food = JSON.parse(item.Food); 
+                console.log(food[0].name)
+
+             /*    const y = doc.y;
+                const padding = 10;  */
+
+           
+               /*  if (item.Food.length > 0) {
+                    const food = item.Food[0]; 
+            
+                    doc.text(food.name, padding, y);
+                    doc.text(food.price.toString(), padding + 18, y, { align: 'right', width: 20 });
+                    doc.text(item.qty.toString(), padding + 36, y, { align: 'right', width: 20 });
+                    doc.text((food.price * item.qty).toString(), padding + 55, y, { align: 'right' });
+            
+                    doc.y += 15; 
+                } */
+            })
+            return
+            /* console.log(SaleTemp[0].Food) */
+         /*    const item = JSON.parse(SaleTemp[0].Food)
+         
+            console.log(SaleTemp) */
+
+          /*   for(let i = 0 ;i < item.length ; i++){
+                console.log(item[i])
+            } */
+        /*     
+            SaleTemp.map((item,index)=>{
+                console.log(item)
+        
+                
+            }) */
+          /*   return */
+
+          /*   console.log(SaleTemp)
+            return */
+
+            const pdfkit = require('pdfkit')
+            const fs = require('fs')
+            const dayjs = require('dayjs');
+
+            const paperWidth = 80
+            const padding = 3;
+
+            const doc = new pdfkit({
+                size:[paperWidth,200],
+                margins:{
+                    top:3,
+                    bottom:3,
+                    left:3,
+                    right:3,
+                }
+            })
+            const filename = `uploads/bill-${dayjs(new Date()).format('YYYYMMDDHHmmss')}.pdf`;
+            const font = 'Kanit/Kanit-Regular.ttf'
+
+            doc.pipe(fs.createWriteStream(filename))
+            doc.font(font)
+            doc.fontSize(8)
+            doc.text(organization[0].name)
+            doc.fontSize(5)
+            doc.text(organization[0].address)
+            doc.text(`เบอร์โทร: ${organization[0].phone}`)
+            doc.text(`เลขประจำตัวผู้เสียภาษี: ${organization[0].taxcode}`)
+            doc.text(`โต๊ะ: ${req.body.tableno}`,{align:'center'})
+            doc.text(`วันที่: ${dayjs(new Date()).format('DD/MM/YYYY HH:mm:ss')}`,{align:'center'})
+            doc.text('รายการอาหาร',{align:'center'})
+            doc.moveDown();
+
+            const y = doc.y;
+            doc.fontSize(4)
+            doc.text('รายการ',padding , y)
+            doc.text('ราคา',padding + 18  , y,{align:'right',width:20})
+            doc.text('จำนวน',padding + 36  , y,{align:'right',width:20})
+            doc.text('รวม',padding + 55  , y,{align:'right'})
+
+            SaleTemp.map((item,index)=>{
+           
+                const y = doc.y;
+             
+
+           
+         
+            
+                    doc.text(item.food.name, padding, y);
+                    doc.text(item.food.price, padding + 18, y, { align: 'right', width: 20 });
+                    doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
+                    doc.text((item.food.price * item.qty).toString(), padding + 55, y, { align: 'right' });
+            
+                    doc.y += 15; 
+              
+            })
+
+            let sumamount = 0;
+            SaleTemp.forEach((item)=>{
+                sumamount += item.price * item.qty
+            })
+
+            doc.text(`รวม: ${sumamount} บาท`,{align:'right'})
+            doc.end()
+
+            return res.send({message : 'success',filename:filename})
+        }catch(e){
+            return res.status(500).send({error:e.message})
         }
     }
 }

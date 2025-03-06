@@ -24,8 +24,14 @@
                         {
                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <div class="card">
-                                <img src="{{apiPath}}/uploads/{{item.img}}" class="card-image" height="100px"
+                                @if(item.img){
+                                    <img src="{{apiPath}}/uploads/{{item.img}}" class="card-image" height="100px"
                                     (click)="savetosaletemp(item)">
+                                }@else{
+                                    <img src="{{apiPath}}/uploads/1741157263791.jpg" class="card-image" height="100px"
+                                    (click)="savetosaletemp(item)">
+                                }
+                              
                                 <div class="card-body">
                                     <div class="h5">{{item.name}}</div>
                                     <div class="text-success h5 text-center">{{item.price}}</div>

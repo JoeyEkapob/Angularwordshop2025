@@ -86,6 +86,7 @@ export class SaleComponent {
     try {
       this.http.post(config.apiServer + '/api/food/list', {}).subscribe((res: any) => {
         this.foods = res.result
+        /* console.log(this.foods) */
       })
     } catch (e: any) {
       Swal.fire({
@@ -142,41 +143,27 @@ export class SaleComponent {
       /*   console.log(res.results) */
        
         this.saletemps = res.results
-        console.log(this.saletemps)
+        console.log(this.saletemps) 
  
         for( let i = 0; i < this.saletemps.length; i++){
           const item = this.saletemps[i]
+          console.log(typeof(item.saletempdetail))
+   /*      console.log(item.saletempdetail)
+        console.log(item.saletempdetail.length) */
+
           if(item.saletempdetail){
-          const jsonsaletempdetail = JSON.parse(item.saletempdetail);
+         /*    console.log(item)
+            return */
           if(item.saletempdetail.length > 0) {
+          const jsonsaletempdetail = JSON.parse(item.saletempdetail);
          item.qty = jsonsaletempdetail.length
            item.disabledQtyButton = true; 
-         }
-        } 
+          } 
+        }  
       }
- /*   console.log(jsonsaletempdetail) */
-      /*   
-        for( let i = 0; i < this.saletemps.length; i++){
-            const item = this.saletemps[i]
-
-            if(item.saletempdetail.length > 0) {
-              item.qty = item.saletempdetail.length */
-         /*      item.disabledQtyButton = true; */
-         /*    }
-        } */
+ 
         
       this.computeamount() 
-        /*  console.log(saletemps)  */
-
-        /*      this.amount = 0; */
-
-        /*  for(let i = 0 ; i < this.saletemps.length; i++){
-           const item = this.saletemps[i]
-           const qty = item.qty;
-           const price = item.price
-   
-           this.amount += qty * price 
-         }  */
       
       })
 
@@ -296,7 +283,7 @@ export class SaleComponent {
     return  */
     this.http.post(config.apiServer + '/api/saletemp/listsaletempdetail', { saletempid }).subscribe((res: any) => {
       this.saletempdetail = res.result
- /*        this.computeamount() */
+       this.computeamount() 
     })
   }
   selectedfoodsize(foodsizeid: number, saletempid: number) {
@@ -322,47 +309,28 @@ export class SaleComponent {
   }
 
   computeamount() {
-   /*  console.log(this.saletemps)
-    this.amount = 0
-    console.log(this.saletemps)
-    if(this.saletemps.saletempdetail === undefined){
-   
-      for (let i = 0; i < this.saletemps.length; i++) {
-        console.log(this.saletemps[i])
 
-        const item = this.saletemps[i]
-        console.log(item)
 
-        const totalperrow = item.qty * item.price
-        this.amount += totalperrow
-      }
-   
-   
-    }else{ */
   /*   console.log(this.saletemps)
-    console.log(this.saletemps.length) */
+    return */
     this.amount = 0
     
-    console.log( this.saletemps) 
       for (let i = 0; i < this.saletemps.length; i++) {
        
         const item = this.saletemps[i]
-    /*  console.log( item.qty ) 
-     console.log( item.price )  */
-
         const totalperrow = item.qty * item.price
+        if(item.saletempdetail){
         const jsonsaletempdetail = JSON.parse(item.saletempdetail);
         for (let j = 0; j < jsonsaletempdetail.length; j++) {
             this.amount += jsonsaletempdetail[j].addedmoney ?? 0  
    
 
           } 
+        }
         this.amount += totalperrow
-   /*    console.log( this.amount) */
-
+ 
       }
-     /*  console.log( this.amount) */
-   /*  } */
+  
 
   
 
