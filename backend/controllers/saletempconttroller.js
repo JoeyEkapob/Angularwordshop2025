@@ -395,72 +395,58 @@ module.exports = {
                          
                             WHERE s.userId = ? AND s.tableNo = ?`
 
+                        /* const sql2 = `SELECT s.*,f.*,d.*FROM SaleTemp s 
+                        LEFT JOIN Food f ON f.id = s.foodId 
+                        LEFT JOIN SaleTempDetail d ON s.id = d.saleTempId 
+                        WHERE s.userId = ? AND s.tableNo = ?` */
+
             const values = [req.body.userid,req.body.tableno]
           
             const [SaleTemp] = await pool.query(sql2,values)
 
-            console.log(SaleTemp)
-            SaleTemp.map((item,index)=>{
-                const food = JSON.parse(item.food[index])
-                for(let i =0 ; i< food.length ; i++){
-                    console.log(item.food.name)
-                    console.log(item.food.price)
-                    console.log(item.qty)
-                }
+    /*     console.log(SaleTemp) 
+        return */
 
-              
+          const saleTempDetails = JSON.parse(SaleTemp[0].SaleTempDetails);
+          const foodList = JSON.parse(SaleTemp[0].Food);
+
+          console.log(saleTempDetails) 
+
+          
+          const foodMap = foodList.reduce((acc, food) => {
+            const totalQty = saleTempDetails.filter(detail => detail.foodid === food.id).length;
+            const result = totalQty === 0 ? SaleTemp[0].qty : totalQty;
+            if(!acc[food.id]){
+                acc[food.id] = {
+                tableNo: SaleTemp[0].tableno,
+                userId: SaleTemp[0].userid,
+                foodName: food.name,
+                price: food.price,
+                qty: result,
+                totalPrice: food.price * result
+            }
+    
+             }  
+                /*    return totalQty */
+            return acc
+          }, {})    
+
+     /*      console.log(foodMap)
+          return */
+
+/* 
+          ret
+            let sumamount5 = 0;
+
                
-             
-           
-            
-                /* doc.text(item.food.name, padding, y);
-                doc.text(item.food.price, padding + 18, y, { align: 'right', width: 20 });
-                doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
-                doc.text((item.food.price * item.qty).toString(), padding + 55, y, { align: 'right' }); */
 
-            })
-            return
-            SaleTemp.map((item,index)=>{
-              /*   console.log(item) */
-                const food = JSON.parse(item.Food); 
-                console.log(food[0].name)
 
-             /*    const y = doc.y;
-                const padding = 10;  */
+          console.log(result)
+        return
+          */
 
-           
-               /*  if (item.Food.length > 0) {
-                    const food = item.Food[0]; 
-            
-                    doc.text(food.name, padding, y);
-                    doc.text(food.price.toString(), padding + 18, y, { align: 'right', width: 20 });
-                    doc.text(item.qty.toString(), padding + 36, y, { align: 'right', width: 20 });
-                    doc.text((food.price * item.qty).toString(), padding + 55, y, { align: 'right' });
-            
-                    doc.y += 15; 
-                } */
-            })
-            return
-            /* console.log(SaleTemp[0].Food) */
-         /*    const item = JSON.parse(SaleTemp[0].Food)
-         
-            console.log(SaleTemp) */
 
-          /*   for(let i = 0 ;i < item.length ; i++){
-                console.log(item[i])
-            } */
-        /*     
-            SaleTemp.map((item,index)=>{
-                console.log(item)
-        
-                
-            }) */
-          /*   return */
-
-          /*   console.log(SaleTemp)
-            return */
-
-            const pdfkit = require('pdfkit')
+        const pdfkit = require('pdfkit')
             const fs = require('fs')
             const dayjs = require('dayjs');
 
@@ -480,9 +466,21 @@ module.exports = {
             const font = 'Kanit/Kanit-Regular.ttf'
 
             doc.pipe(fs.createWriteStream(filename))
+
+            const imageWidth = 20;
+            const positionX = (paperWidth / 2) - (imageWidth / 2 )
+
+            doc.image('uploads/'+ organization[0].logo , positionX,5,{
+                align:'center',
+                width:imageWidth,
+                height:20
+            })
+            doc.moveDown()
+
             doc.font(font)
+            doc.fontSize(5).text('***ใบแจ้งรายการ***',20,doc.y+8)
             doc.fontSize(8)
-            doc.text(organization[0].name)
+            doc.text(organization[0].name, padding,doc.y + 8)
             doc.fontSize(5)
             doc.text(organization[0].address)
             doc.text(`เบอร์โทร: ${organization[0].phone}`)
@@ -499,32 +497,181 @@ module.exports = {
             doc.text('จำนวน',padding + 36  , y,{align:'right',width:20})
             doc.text('รวม',padding + 55  , y,{align:'right'})
 
-            SaleTemp.map((item,index)=>{
-           
-                const y = doc.y;
-             
-
-           
-         
-            
-                    doc.text(item.food.name, padding, y);
-                    doc.text(item.food.price, padding + 18, y, { align: 'right', width: 20 });
+            doc.lineWidth(0.1)
+            doc.moveTo(padding,y+6).lineTo(paperWidth - padding,y+6).stroke()
+            Object.values(foodMap).map((item,index)=>{
+                
+                const y = doc.y;    
+                    doc.text(item.foodName, padding, y);
+                    doc.text(item.price, padding + 18, y, { align: 'right', width: 20 });
                     doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
-                    doc.text((item.food.price * item.qty).toString(), padding + 55, y, { align: 'right' });
+                    doc.text((item.totalPrice).toString(), padding + 55, y, { align: 'right' });
             
-                    doc.y += 15; 
+            
               
             })
 
-            let sumamount = 0;
-            SaleTemp.forEach((item)=>{
-                sumamount += item.price * item.qty
-            })
+            const resulttotal = Object.values(foodMap).reduce((acc,item)=> acc + item.totalPrice , 0 )
+            const  resulttotaldetails = saleTempDetails.reduce((acc,item)=> acc + item.addedmoney , 0)
+            const totalall = resulttotal + resulttotaldetails ?? 0
 
-            doc.text(`รวม: ${sumamount} บาท`,{align:'right'})
+            doc.text(`รวม: ${totalall} บาท`,{align:'center'})
             doc.end()
 
             return res.send({message : 'success',filename:filename})
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
+    },
+    printbillafterpay : async (req,res)=>{
+        try{
+            const sql = `SELECT * FROM Orgnization LIMIT 1 `
+            const [organization] = await pool.query(sql)
+
+            const sql2 = `SELECT b.*,bd.*,f.*,u.*
+                               
+                            FROM BillSale b
+                            LEFT JOIN BillSaleDetail bd ON b.id = bd.billsaleid
+                            LEFT JOIN Food f ON bd.foodid = f.id
+                            LEFT JOIN users u ON b.userid = u.id
+                         
+                            WHERE b.userid = ? AND b.tableno = ? AND b.status = 'use' ORDER BY b.id DESC LIMIT 1`
+
+                        /* const sql2 = `SELECT s.*,f.*,d.*FROM SaleTemp s 
+                        LEFT JOIN Food f ON f.id = s.foodId 
+                        LEFT JOIN SaleTempDetail d ON s.id = d.saleTempId 
+                        WHERE s.userId = ? AND s.tableNo = ?` */
+
+            const values = [req.body.userid,req.body.tableno]
+          
+            const [billsale] = await pool.query(sql2,values)
+
+      console.log(billsale) 
+      /* billsale.map((item,index)=>{
+      
+        const y = doc.y;    
+            doc.text(item.amount, padding, y);
+            doc.text(item.price, padding + 18, y, { align: 'right', width: 20 });
+            doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
+            doc.text((item.totalPrice).toString(), padding + 55, y, { align: 'right' });
+    
+    
+      
+    }) */
+    
+
+        /*   const saleTempDetails = JSON.parse(SaleTemp[0].SaleTempDetails);
+          const foodList = JSON.parse(SaleTemp[0].Food);
+
+          console.log(saleTempDetails) 
+
+          
+          const foodMap = foodList.reduce((acc, food) => {
+            const totalQty = saleTempDetails.filter(detail => detail.foodid === food.id).length;
+            const result = totalQty === 0 ? SaleTemp[0].qty : totalQty;
+            if(!acc[food.id]){
+                acc[food.id] = {
+                tableNo: SaleTemp[0].tableno,
+                userId: SaleTemp[0].userid,
+                foodName: food.name,
+                price: food.price,
+                qty: result,
+                totalPrice: food.price * result
+            }
+    
+             }  
+          
+            return acc
+          }, {})     */
+
+     /*      console.log(foodMap)
+          return */
+
+/* 
+          ret
+            let sumamount5 = 0;
+
+               
+
+
+          console.log(result)
+        return
+          */
+
+
+        const pdfkit = require('pdfkit')
+            const fs = require('fs')
+            const dayjs = require('dayjs');
+
+            const paperWidth = 80
+            const padding = 3;
+
+            const doc = new pdfkit({
+                size:[paperWidth,200],
+                margins:{
+                    top:3,
+                    bottom:3,
+                    left:3,
+                    right:3,
+                }
+            })
+            const filename = `uploads/invoice-${dayjs(new Date()).format('YYYYMMDDHHmmss')}.pdf`;
+            const font = 'Kanit/Kanit-Regular.ttf'
+
+            doc.pipe(fs.createWriteStream(filename))
+
+            const imageWidth = 20;
+            const positionX = (paperWidth / 2) - (imageWidth / 2 )
+
+            doc.image('uploads/'+ organization[0].logo , positionX,5,{
+                align:'center',
+                width:imageWidth,
+                height:20
+            })
+            doc.moveDown()
+
+            doc.font(font)
+            doc.fontSize(5).text('***ใบเสร็จรับเงิน***',20,doc.y+8)
+            doc.fontSize(8)
+            doc.text(organization[0].name, padding,doc.y + 8)
+            doc.fontSize(5)
+            doc.text(organization[0].address)
+            doc.text(`เบอร์โทร: ${organization[0].phone}`)
+            doc.text(`เลขประจำตัวผู้เสียภาษี: ${organization[0].taxcode}`)
+            doc.text(`โต๊ะ: ${req.body.tableno}`,{align:'center'})
+            doc.text(`วันที่: ${dayjs(new Date()).format('DD/MM/YYYY HH:mm:ss')}`,{align:'center'})
+            doc.text('รายการอาหาร',{align:'center'})
+            doc.moveDown();
+
+            const y = doc.y;
+            doc.fontSize(4)
+           
+            doc.text('รายการ',padding , y)
+            doc.text('ราคา',padding + 18  , y,{align:'right',width:20})
+            doc.text('จำนวน',padding + 36  , y,{align:'right',width:20})
+            doc.text('รวม',padding + 55  , y,{align:'right'})
+           
+
+            doc.lineWidth(0.1)
+            doc.moveTo(padding,y+6).lineTo(paperWidth - padding,y+6).stroke()
+         
+            billsale.map((item,index)=>{
+                doc.moveDown();
+                doc.text(`รวม: ${item.amount} บาท รับเงิน: ${item.inputmoney}`,padding  ,y +10 ,{align:'center'})
+                doc.text(`เงินทอน: ${item.amount} บาท`,{align:'center'})
+       
+            
+              
+            })
+
+        /*     const resulttotal = Object.values(foodMap).reduce((acc,item)=> acc + item.totalPrice , 0 )
+            const  resulttotaldetails = saleTempDetails.reduce((acc,item)=> acc + item.addedmoney , 0)
+            const totalall = resulttotal + resulttotaldetails ?? 0
+
+            doc.text(`รวม: ${totalall} บาท`,{align:'center'}) */
+            doc.end()
+
+            return res.send({message : 'success',filename:filename})    
         }catch(e){
             return res.status(500).send({error:e.message})
         }

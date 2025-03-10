@@ -4,6 +4,7 @@ import config from '../../config';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { MymodalComponent } from '../mymodal/mymodal.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-sale',
@@ -431,6 +432,10 @@ export class SaleComponent {
 
         document.getElementById('modalEndSale_btnClose')?.click();
         this.clearForm()
+
+        const btnprintbill = document.getElementById('btnprintbill') as HTMLButtonElement;
+        btnprintbill.click()
+        this.printbillafterpay()
       })
     }catch(e:any){
       Swal.fire({
@@ -446,20 +451,52 @@ export class SaleComponent {
     this.returnmoney=0;
     this.amount=0;
   }
-  printbtllbeforepay(){
+  async printbtllbeforepay(){
     try{
       const payload = {
         userid : this.userId,
         tableno : this.tableno
       }
-      this.http.post(config.apiServer + '/api/saletemp/printbtllbeforepay',payload).subscribe((res:any)=>{
+
+      const url = config.apiServer + '/api/saleTemp/printbtllbeforepay'
+      const res: any = await firstValueFrom(this.http.post(url,payload))
+
+      setTimeout(()=>{
+        this.billforpayurl = config.apiServer + '/' + res.filename;
+        document.getElementById('pdf-frame')?.setAttribute('src',this.billforpayurl)
+      },500)
+
+     /*  this.http.post(config.apiServer + '/api/saletemp/printbtllbeforepay',payload).subscribe((res:any)=>{
         this.billforpayurl = res.url
-      })
+      }) */
+      
     }catch(e:any){
       Swal.fire({
         title:'error',
         text:e.message,
         icon:'error'
+      })
+    }
+  }
+  async printbillafterpay(){
+    try{
+      const payload ={
+        userid : this.userId,
+        tableno:this.tableno
+      }
+
+      const url = config.apiServer + '/api/saletemp/printbillafterpay'
+      const res: any =  await firstValueFrom(this.http.post(url,payload))
+
+      setTimeout(() => {
+        const iframe = document.getElementById('pdf-frame') as HTMLIFrameElement;
+         iframe?.setAttribute('src',config.apiServer + '/' + res.filename)
+      }, 500);
+    }catch(e:any){
+      Swal.fire({
+        title:'error',
+        text:e.message,
+        icon:'error',
       })
     }
   }

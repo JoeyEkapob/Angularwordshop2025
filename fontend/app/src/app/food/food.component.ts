@@ -5,6 +5,7 @@ import config  from '../../config';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { table } from 'console';
 
 @Component({
   selector: 'app-food',
@@ -213,4 +214,5 @@ export class FoodComponent {
       })
     }
   }
+  
 }
