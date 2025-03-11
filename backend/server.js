@@ -13,6 +13,7 @@ const tastecontroller = require('./controllers/tastecontroller')
 const foodcontroller = require('./controllers/foodcontroller')
 const saletempconttroller = require('./controllers/saletempconttroller')
 const organizationcontroller = require('./controllers/organizationcontroller')
+const billsalecontroller = require('./controllers/billsalecontroller')
 
 app.use(cors())
 app.use(fileUpload())
@@ -70,6 +71,9 @@ app.get('/api/organization/list/:id',(req,res)=>organizationcontroller.list(req,
 
 
 app.post('/api/foodsize/filter/',(req,res)=>foodsizecontroller.filter(req,res))
+
+
+app.post('/api/billsale/list',(req,res)=> billsalecontroller.list(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')

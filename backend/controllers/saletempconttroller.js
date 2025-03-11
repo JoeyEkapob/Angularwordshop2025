@@ -1,7 +1,5 @@
-const { error } = require('console');
+
 const pool = require('./config/db');
-const { updateSourceFile } = require('typescript');
-const { json } = require('body-parser');
 
 module.exports = {
     create: async (req, res) => {
@@ -288,8 +286,6 @@ module.exports = {
 
     endsale: async (req, res) => {
 
-        /*  console.log(req.body.userid)
-            return  */
         try {
             const sql = `SELECT 
                         SaleTemp.*, 
@@ -310,33 +306,68 @@ module.exports = {
 
                         WHERE SaleTemp.userid = ?`
             const [rows] = await pool.query(sql, parseInt(req.body.userid))
+          /*   console.log(rows[0])
+            return */
 
            const sqlbillsale = `INSERT INTO BillSale (amount,inputmoney,paytype,tableno,userid,returnmoney) VALUES(?,?,?,?,?,?) `
              const values = [req.body.amount, req.body.inputmoney,req.body.paytype,req.body.tableno,req.body.userid,req.body.returnmoney]
              const [billsale] =   await pool.query(sqlbillsale,values)
- 
+          
              const sqlGetBill = `SELECT * FROM BillSale WHERE id = ?`;
              const [newBill] = await pool.query(sqlGetBill, [billsale.insertId]); 
 
-            /*  console.log(billsale[0].userid)
-               return  */
+            /*  const  item2 = JSON.parse(rows[0].SaleTempDetail) */
+           
+        /*     console.log(item2[1]) */ 
+           /*   item2.map((item,index)=>{ */
+              /*  console.log(item.id) */
+             /*   if(item.id){
+                console.log(item2.length)
+               } */
+               /*  if(item[item].id){
+                    console.log('trujjn')
+
+                } */
+           /*   }) */
+          /*    return  */
             for(let i =0;i < rows.length;i++){
                     const  item = JSON.parse(rows[i].SaleTempDetail)
                 
-                    if(item.length > 0){
-                        for( let j = 0; j< item.length;j++ ){
+                    if(item.length > 0 ){
+                    
+                       
+                         for( let j = 0; j< item.length;j++ ){
                             const detail = item[j]
-                         const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,tasteid,moneyadded,price) VALUES(?,?,?,?,?) `
-                         await pool.query(sqlBillSaleDetail, [newBill[0].id, detail.foodid , detail.tasteid  , detail.addedmoney ,detail.price])
-                        }
+                           
+
+                            if(detail.id){
+                                
+                               const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,tasteid,moneyadded,price) VALUES(?,?,?,?,?) `
+                                 await pool.query(sqlBillSaleDetail, [newBill[0].id, detail.foodid , detail.tasteid  , detail.addedmoney ,detail.price])
+                               /*   console.log('true') */
+                            /* }else{
+                                console.log(newBill[0].id)
+                                console.log(rows[0].foodid)
+                                console.log(item.food.price)
+
+                                /* const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,price) VALUES(?,?,?) `
+                                await pool.query(sqlBillSaleDetail, [newBill[0].id,item.foodid ,item.food.price])
+                                console.log('false') 
+                            } */
+                         /*  */
+                        } 
+                    }
                     }else{
-                        const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,price) VALUES(?,?,?) `
-                        await pool.query(sqlBillSaleDetail, [newBill[0].id,item.foodid ,item.food.price])
+                      
+
+                         const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,price) VALUES(?,?,?) `
+                        await pool.query(sqlBillSaleDetail, [newBill[0].id,item.foodid ,item.food.price]) 
                     } 
     
     
              
                 }  
+              
             const item = JSON.parse(rows[0].SaleTempDetail)
             for (let j = 0; j < item.length; j++) {
 
@@ -546,7 +577,7 @@ module.exports = {
           
             const [billsale] = await pool.query(sql2,values)
 
-      console.log(billsale) 
+ /*      console.log(billsale)  */
       /* billsale.map((item,index)=>{
       
         const y = doc.y;    
