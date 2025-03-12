@@ -358,10 +358,17 @@ module.exports = {
                         } 
                     }
                     }else{
-                      
-
-                         const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,price) VALUES(?,?,?) `
+                      if(item.qty > 0){
+                        for(let j = 0;j < item.qty ; j++){
+                            const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,price) VALUES(?,?,?) `
+                            await pool.query(sqlBillSaleDetail, [newBill[0].id,item.foodid ,item.food.price]) 
+                        }
+                      }else{
+                        const sqlBillSaleDetail = `INSERT INTO BillSaleDetail (billsaleid,foodid,price) VALUES(?,?,?) `
                         await pool.query(sqlBillSaleDetail, [newBill[0].id,item.foodid ,item.food.price]) 
+                      }
+
+                         
                     } 
     
     

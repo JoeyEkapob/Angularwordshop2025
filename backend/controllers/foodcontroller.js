@@ -61,15 +61,15 @@ module.exports = {
      try{
          /*  let img = req.body.img;
             console.log(req) */
-           /*  const img = req.body.img;
-            if(img === ''){
+           const img = req.body.img;
+           /*  if(img === ''){
                 const row = `SELECT * FROM Food WHERE id = ?`
                 const values = [req.body.id]
                 const [rows] = await pool.query(row,values)
 
                 img = rows.img
-            }  */
-           /*  const sql  = `UPDATE Food SET foodtypeid = ? , foodtype = ? , name = ? , price = ? , remark = ? , img = ?  WHERE id = ?`;
+            } 
+           const sql  = `UPDATE Food SET foodtypeid = ? , foodtype = ? , name = ? , price = ? , remark = ? , img = ?  WHERE id = ?`;
             const values  = [req.body.foodtypeid,req.body.foodtype,req.body.name,req.body.price,req.body.remark ,req.body.img ?? '',req.body.id]
             const [rows] = await pool.query(sql,values)  */
             return res.send({message:req.body.img})

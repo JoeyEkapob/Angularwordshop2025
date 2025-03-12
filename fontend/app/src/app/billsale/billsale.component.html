@@ -5,17 +5,17 @@
             <div class="col-md-5">
                 <div class="input-group">
                     <span class="input-group-text">จากวันที่</span>
-                    <input type="date" class="form-control">
+                    <input type="date" class="form-control" [ngModel]="startdate">
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="input-group">
                     <span class="input-group-text">ถึงวันที่</span>
-                    <input type="date" class="form-control" >
+                    <input type="date" class="form-control" [ngModel]="enddate">
                 </div>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary btn-block">
+                <button class="btn btn-primary btn-block" (click)="fetchdata()">
                     <i class="fas fa-search me-1"></i>
                     แสดงรายการ
                 </button>
@@ -36,20 +36,25 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="text-center">
-                        <button class="btn btn-danger">
-                            <i class="fa fa-times me-1"></i>
-                            ยกเลิก
-                        </button>
-                    </td>
-                </tr>
+                @for (billSale of billsales; track billSale.id) {
+                    <tr>
+                        <td class="text-center">{{ dayjs(billSale.createdate).format('DD/MM/YYYY HH:mm:ss') }}</td>
+                        <td>{{billSale.id}}</td>
+                      <!--   <td>{{billSale.user.name}}</td> -->
+                        <td class="text-center">{{billSale.tableno}}</td>
+                        <td>{{billSale.paytype}}</td>
+                        <td class="text-center">{{billSale.amount}}</td>
+                        <td></td>
+                        <td class="text-center">
+                            <button class="btn btn-danger" (click)="remove(billSale.id)">
+                                <i class="fa fa-times me-1"></i>
+                                ยกเลิก
+                            </button>
+                        </td>
+                    </tr>
+                    
+                }
+               
             </tbody>
         </table>
     </div>
