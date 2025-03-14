@@ -448,7 +448,7 @@ module.exports = {
           const saleTempDetails = JSON.parse(SaleTemp[0].SaleTempDetails);
           const foodList = JSON.parse(SaleTemp[0].Food);
 
-          console.log(saleTempDetails) 
+          /* console.log(saleTempDetails)  */
 
           
           const foodMap = foodList.reduce((acc, food) => {
@@ -566,7 +566,29 @@ module.exports = {
             const sql = `SELECT * FROM Orgnization LIMIT 1 `
             const [organization] = await pool.query(sql)
 
-            const sql2 = `SELECT b.*,bd.*,f.*,u.*
+            const sql2 = `SELECT b.*,JSON_ARRAYAGG(
+                                            JSON_OBJECT(
+                                            'id',bd.id,
+                                            'billsaleid',bd.billsaleid,
+                                            'foodid',bd.foodid,
+                                            'foodsizeid',bd.foodsizeid,
+                                            'tasteid',bd.tasteid,
+                                            'moneyadded',bd.moneyadded,
+                                            'price',bd.price
+                                            )
+                                        ) as BillSaleDetail  ,  
+                                         JSON_ARRAYAGG(
+                                        JSON_OBJECT(
+                                            'id', f.id,
+                                            'foodtypeid', f.foodtypeid,
+                                            'name', f.name,
+                                            'remark', f.remark,
+                                            'price', f.price,
+                                            'img', f.img,
+                                            'foodtype', f.foodtype,
+                                            'status', f.status
+                                        )
+                                    ) AS Food,u.*
                                
                             FROM BillSale b
                             LEFT JOIN BillSaleDetail bd ON b.id = bd.billsaleid
@@ -584,20 +606,59 @@ module.exports = {
           
             const [billsale] = await pool.query(sql2,values)
 
- /*      console.log(billsale)  */
-      /* billsale.map((item,index)=>{
+           /*  console.log(billsale)
+            return */
+
+            const billsaledetails = JSON.parse(billsale[0].BillSaleDetail)
+            const foodList = JSON.parse(billsale[0].Food);
+           /*  const result = totalQty === 0 ? billsale[0].qty : totalQty;   */
+        /*     console.log(billsale[0].qty)
+            return */
+
+            const foodMap = foodList.reduce((acc, food) => {
+                let sum = billsaledetails
+                .filter(item => item.foodid === food.id) // เลือกเฉพาะที่ foodid ตรงกัน
+                .reduce((total, item) => total + (item.moneyadded || 0), 0); // บวก moneyadded
+        
+            const totalQty = billsaledetails.filter(detail => detail.foodid === food.id).length;
+               const result = totalQty === 0 ? billsale[0].qty : totalQty;  
+               if(!acc[food.id]){
+                
+                    acc[food.id] = {
+                    tableNo: billsale[0].tableno,
+                    userId: billsale[0].userid,
+                    foodName: food.name,
+                    price: food.price,
+                    qty: totalQty,
+                    totalPrice: (food.price * result) + sum
+                }
+        
+                 }   
+                    /*    return totalQty */
+                return acc
+              }, {})   
+
+     /*      console.log(foodMap)
+              return
+ */
+     /*  billsaledetails.map((item,index)=>{
+        console.log(item.amount)  
+        console.log(item.price)  
+        console.log(item.qty)  
+        console.log(item)   */
       
-        const y = doc.y;    
+      /*   const y = doc.y;    
             doc.text(item.amount, padding, y);
             doc.text(item.price, padding + 18, y, { align: 'right', width: 20 });
             doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
             doc.text((item.totalPrice).toString(), padding + 55, y, { align: 'right' });
-    
+     */
     
       
-    }) */
-    
-
+   /*  }) 
+    return */
+   /*  console.log(billsaledetails)  
+    return */
         /*   const saleTempDetails = JSON.parse(SaleTemp[0].SaleTempDetails);
           const foodList = JSON.parse(SaleTemp[0].Food);
 
@@ -637,7 +698,7 @@ module.exports = {
           */
 
 
-        const pdfkit = require('pdfkit')
+            const pdfkit = require('pdfkit')
             const fs = require('fs')
             const dayjs = require('dayjs');
 
@@ -692,14 +753,23 @@ module.exports = {
 
             doc.lineWidth(0.1)
             doc.moveTo(padding,y+6).lineTo(paperWidth - padding,y+6).stroke()
-         
-            billsale.map((item,index)=>{
-                doc.moveDown();
-                doc.text(`รวม: ${item.amount} บาท รับเงิน: ${item.inputmoney}`,padding  ,y +10 ,{align:'center'})
-                doc.text(`เงินทอน: ${item.amount} บาท`,{align:'center'})
-       
+
+            Object.values(foodMap).map((item,index)=>{
+                
+                const y = doc.y;    
+                    doc.text(item.foodName, padding, y);
+                    doc.text(item.price, padding + 18, y, { align: 'right', width: 20 });
+                    doc.text(item.qty, padding + 36, y, { align: 'right', width: 20 });
+                    doc.text((item.totalPrice).toString(), padding + 55, y, { align: 'right' });
+            
             
               
+            })
+           
+            billsale.map((item,index)=>{
+                doc.moveDown();
+                doc.text(`รวม: ${item.amount} บาท รับเงิน: ${item.inputmoney}`,padding  ,y +20 ,{align:'center'})
+                doc.text(`เงินทอน: ${item.returnmoney} บาท`,{align:'center'})  
             })
 
         /*     const resulttotal = Object.values(foodMap).reduce((acc,item)=> acc + item.totalPrice , 0 )

@@ -40,13 +40,13 @@
                     <tr>
                         <td class="text-center">{{ dayjs(billSale.createdate).format('DD/MM/YYYY HH:mm:ss') }}</td>
                         <td>{{billSale.id}}</td>
-                      <!--   <td>{{billSale.user.name}}</td> -->
+                       <td>{{billSale.username}}</td> 
                         <td class="text-center">{{billSale.tableno}}</td>
                         <td>{{billSale.paytype}}</td>
                         <td class="text-center">{{billSale.amount}}</td>
                         <td></td>
                         <td class="text-center">
-                            <button class="btn btn-danger" (click)="remove(billSale.id)">
+                            <button class="btn btn-danger" (click)="remove(billSale.billsid)">
                                 <i class="fa fa-times me-1"></i>
                                 ยกเลิก
                             </button>

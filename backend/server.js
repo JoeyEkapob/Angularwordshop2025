@@ -14,6 +14,7 @@ const foodcontroller = require('./controllers/foodcontroller')
 const saletempconttroller = require('./controllers/saletempconttroller')
 const organizationcontroller = require('./controllers/organizationcontroller')
 const billsalecontroller = require('./controllers/billsalecontroller')
+const reportcontroller = require('./controllers/reportcontroller')
 
 app.use(cors())
 app.use(fileUpload())
@@ -75,6 +76,9 @@ app.post('/api/foodsize/filter/',(req,res)=>foodsizecontroller.filter(req,res))
 
 app.post('/api/billsale/list',(req,res)=> billsalecontroller.list(req,res))
 app.delete('/api/billsale/remove/:id',(req,res)=> billsalecontroller.remove(req,res))
+
+
+app.post('/api/report/sumperdayinyearandmonth',(req,res)=> reportcontroller.sumperdayinyearandmonth(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')

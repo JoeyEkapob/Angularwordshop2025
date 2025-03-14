@@ -7,6 +7,7 @@ import { FoodComponent } from './food/food.component';
 import { SaleComponent } from './sale/sale.component';
 import { OrganuzationComponent } from './organuzation/organuzation.component';
 import { BillsaleComponent } from './billsale/billsale.component';
+import { ReportsumperdayComponent } from './reportsumperday/reportsumperday.component';
 
 
 
@@ -37,9 +38,15 @@ export const routes: Routes = [{
 {
     path:'organization',
     component: OrganuzationComponent,
-},{
+},
+{
     path:'billsale',
     component:BillsaleComponent
+}
+,
+{
+    path:'reportsumperday',
+    component:ReportsumperdayComponent,
 }
   
 ];

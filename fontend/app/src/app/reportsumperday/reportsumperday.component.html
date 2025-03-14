@@ -1,0 +1,41 @@
+<div class="mt-3 card">
+    <div class="card-header">สรุปยอดรายวัน</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <select class="form-control" [(ngModel)]="year">
+                    @for (year of ddlyear; track $index) {
+                        <option [value]="year">{{year}}</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control"  [(ngModel)]="month">
+                    @for (m of ddlmount; track $index) {
+                        <option [value]="$index + 1">{{ m }}</option>
+                    }
+                </select>
+
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary" (click)="fetchData()"><i class="fa fa-search"></i>ค้นหา</button>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>วันที่</th>
+                    <th class="text-right" wtdth="100">ยอดเงิน</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of data; track $index) {
+                    <tr>
+                        <td>{{dayjs(item.date).format('DD/MM/YYYY')}}</td>
+                        <td class="text-right"> {{ item.amount.toLocaleString('th-TH')}}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
