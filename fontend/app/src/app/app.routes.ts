@@ -8,6 +8,7 @@ import { SaleComponent } from './sale/sale.component';
 import { OrganuzationComponent } from './organuzation/organuzation.component';
 import { BillsaleComponent } from './billsale/billsale.component';
 import { ReportsumperdayComponent } from './reportsumperday/reportsumperday.component';
+import { ReportsumpermonthComponent } from './reportsumpermonth/reportsumpermonth.component';
 
 
 
@@ -47,6 +48,11 @@ export const routes: Routes = [{
 {
     path:'reportsumperday',
     component:ReportsumperdayComponent,
+}
+,
+{
+    path:'reportsumpermonth',
+    component:ReportsumpermonthComponent
 }
   
 ];
