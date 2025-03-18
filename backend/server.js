@@ -79,6 +79,7 @@ app.delete('/api/billsale/remove/:id',(req,res)=> billsalecontroller.remove(req,
 
 
 app.post('/api/report/sumperdayinyearandmonth',(req,res)=> reportcontroller.sumperdayinyearandmonth(req,res))
+app.post('/api/report/sumpermonthinyear',(req,res)=> reportcontroller.sumpermonthinyear(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')

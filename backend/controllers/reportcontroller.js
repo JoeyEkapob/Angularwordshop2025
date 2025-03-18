@@ -1,5 +1,6 @@
 const dayjs = require('dayjs')
 const pool = require('./config/db')
+const { error } = require('console')
 /*  const utc = require('dayjs/plugin/utc');  
 const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
@@ -27,7 +28,7 @@ module.exports = {
 
             return */
             for(let day = startdate.date();day<=enddate.date();day++){
-             console.log(day) 
+            /*  console.log(day)  */
                 
              const dateFrom = startdate.date(day).format('YYYY-MM-DD')
              const dateto = startdate.date(day).add(1,'day').format('YYYY-MM-DD')
@@ -53,7 +54,7 @@ module.exports = {
 
                 const [billsale] = await pool.query(sql,[dateFrom])
                 
-                console.log(billsale)
+             /*    console.log(billsale) */
                
                 
               let sum = 0
@@ -131,5 +132,90 @@ module.exports = {
         }catch(e){
             return res.status(500).json({error:e.message})
         }
+    },
+    sumpermonthinyear :async (req,res)=>{
+      try{
+        const year = req.body.year
+        const sumpermonth = [];
+
+        /* console.log(year)
+        return
+ */
+        for (let month = 1;month <=12; month++){
+         
+
+
+          const startdate = dayjs(`${year}-${month}-01`)
+          const enddate = startdate.endOf('month')
+        /*   console.log(startdate)
+          console.log(enddate) */
+     /*    console.log(new Date(startdate.format('YYYY-MM-DD')))
+          console.log(new Date(enddate.format('YYYY-MM-DD')))  */
+         
+          const sql = `SELECT b.*,    
+                                        JSON_ARRAYAGG(
+                                            JSON_OBJECT(
+                                                'id', d.id,
+                                                'billsaleid', d.billsaleid,
+                                                'foodid', d.foodid,
+                                                'foodsizeid', d.foodsizeid,
+                                                'tasteid', d.tasteid,
+                                                'moneyadded', d.moneyadded,
+                                                'price', d.price
+                                            )
+                                        ) AS BillSaleDetail
+                                FROM BillSale b
+                                LEFT JOIN BillSaleDetail d ON b.id = d.billsaleid
+                                WHERE b.createdate BETWEEN ? AND ?
+                                AND b.status = 'use'
+                                `
+
+                const [billsales] = await pool.query(sql,[ new Date(startdate.format('YYYY-MM-DD')),new Date(enddate.format('YYYY-MM-DD'))])
+                /* console.log(billsales[0])  */
+                let sum = 0;
+                if(billsales[0].id){
+                /*   console.log(billsales.length) */
+                 /*  console.log(new Date(startdate.format('YYYY-MM-DD')))
+                  console.log(new Date(enddate.format('YYYY-MM-DD'))) 
+                  
+                  sum += billsales[i].amount */
+               
+               
+                  for(let i = 0 ; i < billsales.length;i++){
+                    sum += billsales[i].amount  
+              /*    console.log(billsales[i]) */
+                  /*   console.log(i)   */
+                  }
+               /*    console.log(sum)  */
+                }
+       
+                /*  for(let i = 0 ; i < billsales[0].length;i++){
+                    sum += billsales[i].amount
+                }  
+                console.log(sum)  */
+                /* return */ 
+                /* let sum = 0;
+
+                for(let i =0 ; i < billsales[0].length;i++){
+                  const billsaledetails = billsales[i].billsaledetails
+
+                  for(let j= 0 ;j<billsaledetails.length;j++){
+                    sum += billsaledetails[j].price
+                  }
+
+                } */
+
+                sumpermonth.push({
+                  month : startdate.format('MM'),
+                  amount : sum
+                }) 
+         
+        }
+       /*  console.log(sumpermonth) */
+      /*  return */
+        return res.send({results:sumpermonth})
+      }catch(e){
+        return res.status(500).json({error:e.message})
+      }
     }
 }

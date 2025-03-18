@@ -9,6 +9,7 @@ import { OrganuzationComponent } from './organuzation/organuzation.component';
 import { BillsaleComponent } from './billsale/billsale.component';
 import { ReportsumperdayComponent } from './reportsumperday/reportsumperday.component';
 import { ReportsumpermonthComponent } from './reportsumpermonth/reportsumpermonth.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 
@@ -53,6 +54,11 @@ export const routes: Routes = [{
 {
     path:'reportsumpermonth',
     component:ReportsumpermonthComponent
+}
+,
+{
+    path:'dashboard',
+    component:DashboardComponent,
 }
   
 ];
