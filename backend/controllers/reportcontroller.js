@@ -136,6 +136,7 @@ module.exports = {
     sumpermonthinyear :async (req,res)=>{
       try{
         const year = req.body.year
+      
         const sumpermonth = [];
 
         /* console.log(year)
@@ -147,9 +148,8 @@ module.exports = {
 
           const startdate = dayjs(`${year}-${month}-01`)
           const enddate = startdate.endOf('month')
-        /*   console.log(startdate)
-          console.log(enddate) */
-     /*    console.log(new Date(startdate.format('YYYY-MM-DD')))
+      
+    /*  console.log(new Date(startdate.format('YYYY-MM-DD')))
           console.log(new Date(enddate.format('YYYY-MM-DD')))  */
          
           const sql = `SELECT b.*,    
@@ -171,7 +171,8 @@ module.exports = {
                                 `
 
                 const [billsales] = await pool.query(sql,[ new Date(startdate.format('YYYY-MM-DD')),new Date(enddate.format('YYYY-MM-DD'))])
-                /* console.log(billsales[0])  */
+           console.log(billsales[0])
+              
                 let sum = 0;
                 if(billsales[0].id){
                 /*   console.log(billsales.length) */
@@ -211,8 +212,8 @@ module.exports = {
                 }) 
          
         }
-       /*  console.log(sumpermonth) */
-      /*  return */
+      /* console.log(sumpermonth)  */
+   /*     return   */
         return res.send({results:sumpermonth})
       }catch(e){
         return res.status(500).json({error:e.message})

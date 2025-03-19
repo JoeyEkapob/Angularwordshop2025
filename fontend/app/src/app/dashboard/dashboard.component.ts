@@ -27,9 +27,10 @@ export class DashboardComponent {
   ngOnInit(){
     const totaldayinmonth = dayjs().daysInMonth()
 
-    this.days= Array.from({length:totaldayinmonth},(_,i)=>i+1)
+    this.days= Array.from({length:totaldayinmonth} , (_,i) => i + 1 )
 
-    this.years= Array.from({length: 20 },(_,i)=>dayjs().year()-1)
+    this.years = Array.from({ length: 20 }, (_, i) => dayjs().year() - i);
+        
     this.monthsname = [
       "มกราคม",  // January
       "กุมภาพันธ์", // February
@@ -48,7 +49,10 @@ export class DashboardComponent {
     this.fetchdata()
   }
 
-  fetehdata(){
+  fetchdata(){
+    console.log(this.years)
+    console.log(this.years)
+    return
     this.fetehdatasumperdayinyearandmonth()
     this.fetehdatasumpermonthinyear()
   }
@@ -62,6 +66,7 @@ export class DashboardComponent {
       labels.push(i + 1)
       datas.push(item.amount)
     }
+    
     const ctx = document.getElementById('chartperday') as HTMLCanvasElement;
     new Chart(ctx,{
       type:'bar',
@@ -88,7 +93,7 @@ export class DashboardComponent {
         year: this.year,
         month: this.month
       }
-  
+    
       this.http.post(config.apiServer + '/api/report/sumperdayinyearandmonth',payload).subscribe((res:any)=>{
         this.incomeperday = res.results
         this.createbarchartdays()
@@ -105,9 +110,12 @@ export class DashboardComponent {
   }
 
   createbarchartmonths(){
-    let datas : number [] = []
+
+
+  let datas : number [] = []
     for(let i = 0;i < this.incomepermonths.length; i++){
       const item = this.incomepermonths[i];
+ 
       datas.push(item.amount)
     }
     const ctx = document.getElementById('chartpermonth') as HTMLCanvasElement
@@ -128,16 +136,19 @@ export class DashboardComponent {
           }
         }
       }
-    })
+    })  
   }
   fetehdatasumpermonthinyear(){
-    try{
+  try{
       const payload = {
-        yaer:this.year
+        year:this.year
       }
+    
       this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload).subscribe((res:any)=>{
         this.incomepermonths = res.results
-        this.createbarchartmonths
+      
+     /*    console.log( this.incomepermonths ) */
+     this.createbarchartmonths()
       })
     }catch(e:any){
       Swal.fire({
@@ -145,7 +156,7 @@ export class DashboardComponent {
         title:'error',
         text:e.message
       })
-    }
+    } 
   }
 
 }

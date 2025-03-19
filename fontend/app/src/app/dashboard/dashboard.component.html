@@ -11,6 +11,26 @@
                     </select>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select name="" id="" class="form-control" [(ngModel)]="month">
+                        @for (month of monthsname; track $index) {
+                            <option [value]="$index + 1">{{ month }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-primary" (click)="fetchdata()"><i class="fa fa-search">แสดงข้อมูล</i></button>
+            </div>
+            <div class="col-md-12">
+                <div class="h4">สรุปรายรับรวมตามวัน</div>
+                <canvas id="chartperday" height="100"></canvas>
+            </div>
+            <div class="col-md-12 mt-3">
+                <div class="h4">สรุปรายรับรวมตามเดือน</div>
+                <canvas id="chartpermonth" height="100"></canvas>
+            </div>
         </div>
     </div>
 </div>
