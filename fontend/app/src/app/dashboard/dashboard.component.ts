@@ -21,6 +21,9 @@ export class DashboardComponent {
   dayjs: typeof dayjs = dayjs
   year: number = dayjs().year()
   month:number = dayjs().month()+1
+  chartInstance: Chart | null = null;
+  chartInstance2: Chart | null = null;
+ 
 
   constructor(private http:HttpClient){}
 
@@ -50,14 +53,14 @@ export class DashboardComponent {
   }
 
   fetchdata(){
-    console.log(this.years)
-    console.log(this.years)
-    return
+ 
     this.fetehdatasumperdayinyearandmonth()
-    this.fetehdatasumpermonthinyear()
+    this.fetehdatasumpermonthinyear() 
   }
 
   createbarchartdays(){
+
+   
     let labels:number [] = []
     let datas:number [] = []
 
@@ -66,9 +69,37 @@ export class DashboardComponent {
       labels.push(i + 1)
       datas.push(item.amount)
     }
-    
-    const ctx = document.getElementById('chartperday') as HTMLCanvasElement;
-    new Chart(ctx,{
+   /*   console.log(this.chartInstance)
+    */
+    const canvas = document.getElementById('chartperday') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d'); 
+/*   console.log(ctx)
+  console.log(this.chartInstance) */
+
+
+    if (!ctx) {
+      console.error("Canvas context is null");
+      return;
+    }
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+    }
+/*   console.log(this.chartInstance) */
+
+
+    /* console.log("Before destroy:", this.chartInstance);
+    if (this.chartInstance) {
+      console.log(this.chartInstance)
+      this.chartInstance.destroy();
+      this.chartInstance = null;
+  } */
+  /* console.log(ctx)
+
+  console.log(ctx.width)
+  
+  ctx.width = ctx.width; */
+
+  this.chartInstance =  new Chart(ctx,{
       type:'bar',
       data:{
         labels : labels,
@@ -86,13 +117,17 @@ export class DashboardComponent {
         }
       }
     })
+
+    /* console.log(this.chartInstance) */
   }
+  
   fetehdatasumperdayinyearandmonth(){
     try{
       const payload = {
-        year: this.year,
-        month: this.month
+        year:  Number(this.year),
+        month:  Number(this.month)
       }
+   
     
       this.http.post(config.apiServer + '/api/report/sumperdayinyearandmonth',payload).subscribe((res:any)=>{
         this.incomeperday = res.results
@@ -111,15 +146,31 @@ export class DashboardComponent {
 
   createbarchartmonths(){
 
+    
 
-  let datas : number [] = []
+   let datas : number [] = []
+
     for(let i = 0;i < this.incomepermonths.length; i++){
       const item = this.incomepermonths[i];
  
       datas.push(item.amount)
     }
-    const ctx = document.getElementById('chartpermonth') as HTMLCanvasElement
-    new Chart(ctx,{
+
+    console.log()
+    const canvas = document.getElementById('chartpermonth') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');  
+/*     console.log(this.chartInstance) */
+   /*  */
+
+    if (!ctx) {
+      console.error("Canvas context is null");
+      return;
+    }
+    if (this.chartInstance2) {
+      this.chartInstance2.destroy();
+    } 
+    
+      this.chartInstance2 =  new Chart(ctx,{
       type: 'bar',
       data:{
         labels:this.monthsname,
@@ -137,18 +188,18 @@ export class DashboardComponent {
         }
       }
     })  
+
   }
   fetehdatasumpermonthinyear(){
   try{
       const payload = {
-        year:this.year
+        year:  Number(this.year)
       }
-    
       this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload).subscribe((res:any)=>{
         this.incomepermonths = res.results
-      
-     /*    console.log( this.incomepermonths ) */
-     this.createbarchartmonths()
+    /*     console.log(this.incomepermonths)
+        return */
+        this.createbarchartmonths()
       })
     }catch(e:any){
       Swal.fire({

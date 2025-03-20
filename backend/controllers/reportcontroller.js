@@ -9,9 +9,11 @@ dayjs.extend(timezone);  */
 module.exports = {
     sumperdayinyearandmonth :async (req,res)=>{
         try{
-            const year = req.body.year
-            const month = req.body.month
-
+            const year = parseInt(req.body.year)
+            const month = parseInt(req.body.month)
+          /*   console.log(typeof(year))
+            console.log(typeof(month))
+          return */
           /*   const bangkokTime = dayjs().tz('Asia/Bangkok').format();
             console.log('Bangkok Time:', bangkokTime);
             return */
@@ -135,13 +137,13 @@ module.exports = {
     },
     sumpermonthinyear :async (req,res)=>{
       try{
-        const year = req.body.year
+        const year = parseInt(req.body.year)
       
         const sumpermonth = [];
 
-        /* console.log(year)
-        return
- */
+       /*   console.log(typeof(year))
+        return */
+ 
         for (let month = 1;month <=12; month++){
          
 
@@ -171,7 +173,7 @@ module.exports = {
                                 `
 
                 const [billsales] = await pool.query(sql,[ new Date(startdate.format('YYYY-MM-DD')),new Date(enddate.format('YYYY-MM-DD'))])
-           console.log(billsales[0])
+       /*     console.log(billsales[0]) */
               
                 let sum = 0;
                 if(billsales[0].id){

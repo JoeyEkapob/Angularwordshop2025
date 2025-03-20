@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
-const pool = require('./config/db')
+const pool = require('./config/db');
+const { error } = require("console");
 
 
 dotenv.config();
@@ -29,5 +30,43 @@ module.exports = {
             return res.status(500).send({error:e.message})
         }
 
+    },
+    list: async (req,res)=>{
+        try{
+            const sql = `SELECT * FROM users WHERE status = 'use' ORDER BY id DESC;
+`
+            const [users] = await pool.query(sql)
+
+            return res.send({results:users})
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
+
+    },
+    create : async (req,res)=>{
+        try{
+            const sql = `INSERT INTO users 
+                                (email, username, password, level) 
+                                VALUES (?, ?, ?, ?)`
+            const values = [req.body.username,req.body.password,req.body.name,req.body.level]
+            await pool.query(sql,values)
+
+            return res.send({message : 'success'})
+
+        }catch(e){
+            return res.status(500).send({error:e.message})
+        }
+    },
+    remove : async ( req,res)=>{
+        try{
+            const sql =`UPDATE users SET status = 'no' WHERE id = ?`
+            await pool.query(sql,parseInt(req.body.id))
+
+            return res.send({message:'success'})
+        }catch(e){
+            
+            return res.status(500).send({error:e.message})
+
+        }
     }
 }
