@@ -22,10 +22,34 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
 app.use('/uploads',express.static('./uploads'))
 
+
+const dotenv = require('dotenv')
+const jwt = require('jsonwebtoken')
+dotenv.config()
+
+
+function isSignIn(req,res,next){
+    try{
+        const token = req.headers.authrization.split(" ")[1]
+        const decoded = jwt.verify(token,process.env.SECRET_KEY);
+        const level = decoded.level
+        
+        if(level !== null){
+           next()
+        }else{
+            return res.status(401).send({ error : "Unauthorized"})
+        }
+    }catch(e){
+        return res.status(401).send({error:"Unauthorized"})
+    }
+}
+
 app.post('/api/user/signin',(req,res) => userController.signin(req,res))
 app.post('/api/user/list',(req,res)=> userController.list(req,res))
 app.post('/api/user/create',(req,res)=>userController.create(req,res))
 app.delete('/api/user/remove/:id',(req,res)=>userController.remove(req,res))
+app.put('/api/user/update',(req,res)=>userController.update(req,res))
+app.get('/api/user/getlevelfromtoken',(req,res)=> userController.getlevelfromtoken(req,res))
 
 
 app.post("/api/foodtype/create",(req,res)=> foodtypecontroller.create(req,res))
@@ -83,8 +107,8 @@ app.post('/api/billsale/list',(req,res)=> billsalecontroller.list(req,res))
 app.delete('/api/billsale/remove/:id',(req,res)=> billsalecontroller.remove(req,res))
 
 
-app.post('/api/report/sumperdayinyearandmonth',(req,res)=> reportcontroller.sumperdayinyearandmonth(req,res))
-app.post('/api/report/sumpermonthinyear',(req,res)=> reportcontroller.sumpermonthinyear(req,res))
+app.post('/api/report/sumperdayinyearandmonth',isSignIn  , (req,res)=> reportcontroller.sumperdayinyearandmonth(req,res))
+app.post('/api/report/sumpermonthinyear', isSignIn , (req,res)=> reportcontroller.sumpermonthinyear(req,res))
 
 app.listen(3000,()=>{
     console.log('API sever Running...')

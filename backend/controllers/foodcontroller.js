@@ -119,5 +119,27 @@ module.exports = {
             return res.status(500).send({error:e.message})
                 
         }
-    }
+    },
+    listpage: async (req,res) => {
+        try{
+            const page = req.body.page ?? 1;
+            const pagesize = req.body.page ?? 10
+
+            const sql = `SELECT * FROM food
+                WHERE status = 'use'
+                LIMIT ? OFFSET ?  *  ?`
+            const rows = await pool.query(sql,[pagesize,page-1,pagesize])
+                
+
+            const sql2 = `SELECT COUNT(*) AS total FROM food
+                WHERE status = 'use';`
+
+            const total = await pool.query(sql2)
+
+            return res.send({results:rows, total :total})
+        }catch{
+            return res.status(500).send({error:e.message})
+          
+        }
+      }
 }

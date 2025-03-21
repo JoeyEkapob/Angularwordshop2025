@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import dayjs from 'dayjs';
 import config from '../../config';
 import Swal from 'sweetalert2';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Component({
@@ -29,12 +29,16 @@ export class ReportsumpermonthComponent {
 
   fetchdata(){
     try{
-        console.log(this.ddyear )
+/*         console.log(this.ddyear ) */
    
       const payload = {
         year : this.year
       }
-      this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload).subscribe((res:any)=>{
+
+      const token = localStorage.getItem('angular_token')!
+      const headers = new HttpHeaders().set('Authrization',`Bearer ${token}`)
+      
+      this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload,{headers : headers}).subscribe((res:any)=>{
         this.data = res.results
       })
     }catch(e:any){

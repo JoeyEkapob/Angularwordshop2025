@@ -40,6 +40,8 @@ export class SigninComponent {
         username: this.username,
         password: this.password
       }
+      /* console.log(payload)
+      return */
       try{
         this.http.post('http://localhost:3000/api/user/signin',payload).subscribe((res:any)=>{
           this.token = res.token;

@@ -41,24 +41,45 @@ export class UserComponent {
     } 
   }
 
+  async edit(item : any){
+    console.log(item)
+    this.id = item.id;
+    this.email = item.email;
+    this.username = item.username;
+    this.password = item.password;
+    this.level = item.level;
+  }
+  clearform(){
+    this.email = '';
+    this.username = '';
+    this.password = '';
+    this.level = '0'
+    this.id = 0;
+  }
+
   save(){
     try{
       const payload = {
-        name:this.email,
+        email:this.email,
         username:this.username,
         password:this.password,
         level:this.level,
+        id : this.id
       }
-      this.http.post(config.apiServer + '/api/user/create',payload).subscribe((res:any) => {
-        this.fetchData()
-        this.email = '';
-        this.username = '';
-        this.password = '';
-        this.level = 'employee';
-        this.id = 0
-
-        document.getElementById('modalUser_btnClose')?.click()
-      })
+     /*  console.log(payload)
+      return */
+      if(this.id > 0){
+        this.http.put(config.apiServer + '/api/user/update',payload).subscribe((res:any)=>{
+          this.fetchData() 
+          this.id = 0;
+        })
+      }else{
+        this.http.post(config.apiServer + '/api/user/create',payload).subscribe((res:any) => {
+          this.fetchData() 
+        })
+      }
+      
+      document.getElementById('modalUser_btnClose')?.click()
     }catch(e:any){
       Swal.fire({
         icon:'error',
@@ -69,6 +90,7 @@ export class UserComponent {
   }
 
   async remove(id:Number){
+  
     try{
       const button = await Swal.fire({
         title:'คุณต้องการลบผู้ใช้งานนี้ใช้หรือไม่',
