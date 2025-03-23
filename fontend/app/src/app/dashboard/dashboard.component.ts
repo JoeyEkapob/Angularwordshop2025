@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import config from '../../config';
 import dayjs from 'dayjs';
 import { Chart } from 'chart.js/auto';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -127,9 +127,11 @@ export class DashboardComponent {
         year:  Number(this.year),
         month:  Number(this.month)
       }
-   
+        const token = localStorage.getItem('angular_token')!
+         const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+         
     
-      this.http.post(config.apiServer + '/api/report/sumperdayinyearandmonth',payload).subscribe((res:any)=>{
+      this.http.post(config.apiServer + '/api/report/sumperdayinyearandmonth',payload,{headers:headers}).subscribe((res:any)=>{
         this.incomeperday = res.results
         this.createbarchartdays()
       })
@@ -195,7 +197,10 @@ export class DashboardComponent {
       const payload = {
         year:  Number(this.year)
       }
-      this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload).subscribe((res:any)=>{
+      const token = localStorage.getItem('angular_token')!
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+
+      this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload,{headers:headers}).subscribe((res:any)=>{
         this.incomepermonths = res.results
     /*     console.log(this.incomepermonths)
         return */

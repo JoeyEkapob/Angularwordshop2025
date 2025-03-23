@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import dayjs from 'dayjs';
 import config from '../../config';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-reportsumperday',
@@ -52,7 +52,15 @@ export class ReportsumperdayComponent {
       year:this.year,
       month:this.month
     }
-    this.http.post(config.apiServer + '/api/report/sumperdayinyearandmonth',payload).subscribe((res:any)=>{
+       const token = localStorage.getItem('angular_token')!
+     /*  console.log(token) */
+       
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      /* console.log("✅ Headers ที่สร้าง:", headers.keys()); // ต้องมี "Authorization" */
+
+     /*  return  */
+     
+    this.http.post(config.apiServer + '/api/report/sumperdayinyearandmonth',payload,{headers : headers}).subscribe((res:any)=>{
       this.data = res.results
     })
   }

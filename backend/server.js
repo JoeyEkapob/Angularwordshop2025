@@ -30,16 +30,18 @@ dotenv.config()
 
 function isSignIn(req,res,next){
     try{
-        const token = req.headers.authrization.split(" ")[1]
+       
+        const token = req.headers.authorization.split(" ")[1]
         const decoded = jwt.verify(token,process.env.SECRET_KEY);
         const level = decoded.level
-        
+       
         if(level !== null){
            next()
         }else{
             return res.status(401).send({ error : "Unauthorized"})
         }
     }catch(e){
+      /*   return console.log(req) */
         return res.status(401).send({error:"Unauthorized"})
     }
 }

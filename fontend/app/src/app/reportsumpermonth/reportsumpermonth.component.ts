@@ -36,7 +36,8 @@ export class ReportsumpermonthComponent {
       }
 
       const token = localStorage.getItem('angular_token')!
-      const headers = new HttpHeaders().set('Authrization',`Bearer ${token}`)
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      
       
       this.http.post(config.apiServer + '/api/report/sumpermonthinyear',payload,{headers : headers}).subscribe((res:any)=>{
         this.data = res.results
