@@ -11,6 +11,7 @@ import { ReportsumperdayComponent } from './reportsumperday/reportsumperday.comp
 import { ReportsumpermonthComponent } from './reportsumpermonth/reportsumpermonth.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserComponent } from './user/user.component';
+import { FoodPaginateComponent } from './food-paginate/food-paginate.component';
 
 
 
@@ -65,4 +66,9 @@ export const routes: Routes = [{
     path:'user',
     component:UserComponent
 }  
+,
+{
+    path:'food-paginate',
+    component:FoodPaginateComponent
+}
 ];

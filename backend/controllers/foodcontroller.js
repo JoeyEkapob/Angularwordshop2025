@@ -123,21 +123,27 @@ module.exports = {
     listpage: async (req,res) => {
         try{
             const page = req.body.page ?? 1;
-            const pagesize = req.body.page ?? 10
+            const pagesize = req.body.pagesize ?? 10
 
-            const sql = `SELECT * FROM food
+            const offset = (page - 1) * pagesize;
+
+            const sql = `SELECT * FROM Food
                 WHERE status = 'use'
-                LIMIT ? OFFSET ?  *  ?`
-            const rows = await pool.query(sql,[pagesize,page-1,pagesize])
+                LIMIT ? OFFSET ?  `
+            const [rows] = await pool.query(sql,[pagesize,offset])
                 
 
-            const sql2 = `SELECT COUNT(*) AS total FROM food
+            const sql2 = `SELECT COUNT(*) AS total FROM Food
                 WHERE status = 'use';`
 
-            const total = await pool.query(sql2)
+            const [total] = await pool.query(sql2)
+       /*     console.log(total)  */
 
+        /*     return  */
+          /*  console.log(rows,total) */
+           /*  return  */
             return res.send({results:rows, total :total})
-        }catch{
+        }catch(e){
             return res.status(500).send({error:e.message})
           
         }
