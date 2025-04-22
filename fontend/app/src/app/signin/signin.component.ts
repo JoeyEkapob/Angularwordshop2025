@@ -18,9 +18,11 @@ export class SigninComponent {
   constructor (private http: HttpClient){}
 
   ngOnInit(){
+    
     if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('angular_token')!
-      
+      this.token = localStorage.getItem('angular_token') ?? ''
+      console.log('typeof token:', typeof this.token);
+console.log('value of token:', this.token);
     }
    
   }

@@ -12,7 +12,7 @@ import { SigninComponent } from './signin/signin.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
- token: string | undefined = '';
+ token: string | undefined ;
 
  ngOnInit(){
   if (typeof window !== 'undefined') {

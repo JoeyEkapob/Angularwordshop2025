@@ -23,8 +23,10 @@ ngOnInit(){
   level : Number = 0 ;
 
   ngOnInit(){
+    if (typeof window !== 'undefined' && localStorage) {
     this.name = localStorage.getItem('angular_username')!;
     this.getlevelfromtoken()
+    }
   }
   async signout(){
     const button = await Swal.fire({
